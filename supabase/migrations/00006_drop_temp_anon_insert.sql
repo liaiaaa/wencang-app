@@ -1,0 +1,1 @@
+drop policy "ai_patterns_anon_insert_temp" on storage.objects;

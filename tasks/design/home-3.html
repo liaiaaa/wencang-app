@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- miaoda-super-design | title: 靛蓝沉浸式 | skeleton: 全屏沉浸式hero+便当格 | sig: 描边镂空标题+靛蓝光晕环+噪点纹理 -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>纹藏 · 非遗染织刺绣数字平台</title>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        container: { center: true, padding: '2rem', screens: { '2xl': '1400px' } },
+        extend: {
+          colors: {
+            border: 'hsl(var(--border))',
+            input: 'hsl(var(--input))',
+            ring: 'hsl(var(--ring))',
+            background: 'hsl(var(--background))',
+            foreground: 'hsl(var(--foreground))',
+            primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+            secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
+            destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+            muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+            accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+            popover: { DEFAULT: 'hsl(var(--popover))', foreground: 'hsl(var(--popover-foreground))' },
+            card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' }
+          },
+          borderRadius: {
+            lg: 'var(--radius)',
+            md: 'calc(var(--radius) - 2px)',
+            sm: 'calc(var(--radius) - 4px)'
+          },
+          keyframes: {
+            /* ===== KEYFRAMES:BEGIN ===== */
+            'blur-in': { '0%': { opacity: '0', filter: 'blur(16px)' }, '100%': { opacity: '1', filter: 'blur(0)' } },
+            'rise': { '0%': { opacity: '0', transform: 'translateY(32px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            'expand-w': { '0%': { clipPath: 'inset(0 100% 0 0)' }, '100%': { clipPath: 'inset(0 0 0 0)' } }
+            /* ===== KEYFRAMES:END ===== */
+          },
+          animation: {
+            /* ===== ANIMATIONS:BEGIN ===== */
+            'blur-in': 'blur-in 1s ease forwards',
+            'rise': 'rise 0.8s cubic-bezier(0.22,1,0.36,1) forwards',
+            'expand-w': 'expand-w 1s cubic-bezier(0.22,1,0.36,1) forwards'
+            /* ===== ANIMATIONS:END ===== */
+          }
+        }
+      },
+      plugins: [
+        function ({ addVariant }) {
+          addVariant('intersect', '&:not([no-intersect])');
+        }
+      ]
+    };
+  </script>
+  <style>
+    /* ===== FONT-FACE:BEGIN ===== */
+    @font-face { font-family: 'SourceHanSerifCN'; src: url('https://resource-static.bj.bcebos.com/fonts-skill/SourceHanSerifCN-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'HarmonyOSSans'; src: url('https://resource-static.bj.bcebos.com/fonts-skill/HarmonyOSSans_Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+    /* ===== FONT-FACE:END ===== */
+
+    /* ===== DESIGN-TOKENS:BEGIN ===== */
+    :root {
+      --radius: 0.75rem;
+      --background: 218 45% 8%;
+      --foreground: 40 30% 92%;
+      --card: 218 40% 12%;
+      --card-foreground: 40 30% 92%;
+      --primary: 218 60% 58%;
+      --primary-foreground: 218 45% 8%;
+      --secondary: 218 35% 18%;
+      --secondary-foreground: 40 30% 90%;
+      --muted: 218 30% 16%;
+      --muted-foreground: 218 15% 60%;
+      --accent: 8 72% 55%;
+      --accent-foreground: 40 30% 95%;
+      --destructive: 0 72% 55%;
+      --destructive-foreground: 40 30% 95%;
+      --border: 218 25% 22%;
+      --input: 218 25% 22%;
+      --ring: 218 60% 58%;
+      --popover: 218 40% 12%;
+      --popover-foreground: 40 30% 92%;
+    }
+    /* ===== DESIGN-TOKENS:END ===== */
+
+    /* ===== CUSTOM-TOKENS:BEGIN ===== */
+    :root {
+      --cinnabar: 8 72% 55%;
+      --indigo-glow: 218 60% 58%;
+    }
+    /* ===== CUSTOM-TOKENS:END ===== */
+
+    /* ===== SIGNATURE-CSS:BEGIN ===== */
+    .glow-ring {
+      box-shadow: 0 0 0 1px hsl(var(--primary) / 0.4), 0 8px 40px -8px hsl(var(--primary) / 0.5);
+    }
+    .text-outline {
+      -webkit-text-stroke: 1px hsl(var(--primary-foreground) / 0.35);
+      color: transparent;
+    }
+    .pattern-motif {
+      background-image:
+        radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, hsl(var(--accent) / 0.08) 0%, transparent 50%);
+    }
+    .grain-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.5;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    }
+    /* ===== SIGNATURE-CSS:END ===== */
+  </style>
+</head>
+<body class="bg-background text-foreground antialiased font-['HarmonyOSSans',sans-serif]">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2">
+        <span class="font-['SourceHanSerifCN',serif] text-xl font-bold tracking-widest text-primary">纹藏</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
+        <a href="#gallery" class="hover:text-primary transition-colors">纹样图库</a>
+        <a href="#workshop" class="hover:text-primary transition-colors">AI工坊</a>
+        <a href="#artisans" class="hover:text-primary transition-colors">守艺人</a>
+        <a href="#booking" class="hover:text-primary transition-colors">体验预约</a>
+        <a href="#shop" class="hover:text-primary transition-colors">文创商城</a>
+      </nav>
+      <button class="bg-primary text-primary-foreground px-4 py-2 text-sm font-medium rounded-full hover:opacity-90 transition-opacity">登录 / 注册</button>
+    </div>
+  </header>
+
+  <!-- Hero: full-bleed immersive -->
+  <section id="hero" class="relative min-h-[80vh] md:min-h-screen flex items-center overflow-hidden pattern-motif">
+    <img src="https://miaoda-site-img.cdn.bcebos.com/images/baidu_image_search_cef52ebf-6761-473b-b9b5-907307225409.jpg" alt="苗族蜡染靛蓝纹样织物" class="absolute inset-0 w-full h-full object-cover opacity-40 opacity-0 intersect:animate-blur-in intersect-once" />
+    <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40"></div>
+    <div class="grain-overlay"></div>
+    <div class="relative max-w-7xl mx-auto px-4 md:px-8 py-24 w-full">
+      <div class="max-w-3xl space-y-8">
+        <div class="flex items-center gap-3 opacity-0 intersect:animate-rise intersect-once">
+          <span class="w-10 h-px bg-accent"></span>
+          <span class="text-xs tracking-[0.3em] text-accent uppercase">Intangible Heritage · 染织刺绣</span>
+        </div>
+        <h1 class="font-['SourceHanSerifCN',serif] text-5xl md:text-7xl font-bold leading-[1.05]">
+          <span class="block opacity-0 intersect:animate-rise intersect-once" style="animation-delay:0.1s">纹样，是</span>
+          <span class="block opacity-0 intersect:animate-rise intersect-once" style="animation-delay:0.2s">
+            <span class="text-outline">时间</span>留下的
+          </span>
+          <span class="block opacity-0 intersect:animate-rise intersect-once" style="animation-delay:0.3s"><span class="text-accent">指纹</span></span>
+        </h1>
+        <p class="max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed opacity-0 intersect:animate-rise intersect-once" style="animation-delay:0.4s">
+          纹藏聚焦蜡染、扎染、苗绣等染织刺绣类非物质文化遗产，以数字化档案记录经典纹样，以AI续写新生纹样，连接守艺人，预约线下体验。
+        </p>
+        <div class="flex flex-wrap gap-4 opacity-0 intersect:animate-rise intersect-once" style="animation-delay:0.5s">
+          <button class="bg-accent text-accent-foreground px-6 py-3 text-sm font-medium rounded-full hover:opacity-90 transition-opacity">探索纹样图库</button>
+          <button class="border border-primary-foreground/30 text-primary-foreground px-6 py-3 text-sm font-medium rounded-full hover:bg-secondary transition-colors">进入AI工坊</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature entries: bento grid -->
+  <section id="features" class="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-20">
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <span class="w-8 h-px bg-accent"></span>
+          <span class="text-xs tracking-[0.25em] text-accent uppercase">Platform</span>
+        </div>
+        <h2 class="font-['SourceHanSerifCN',serif] text-3xl md:text-4xl font-bold text-primary">平台功能入口</h2>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <a href="#gallery" class="md:col-span-2 group bg-card border border-border rounded-2xl p-8 hover:border-primary transition-all glow-ring relative overflow-hidden">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-xs text-muted-foreground">01</span>
+            <h3 class="font-['SourceHanSerifCN',serif] text-2xl font-bold text-primary mt-2 mb-3">纹样图库</h3>
+            <p class="text-sm text-muted-foreground leading-relaxed max-w-md">数字化档案收录蜡染、扎染、苗绣经典纹样，支持按类别筛选与关键词检索。</p>
+          </div>
+          <img src="https://miaoda-site-img.cdn.bcebos.com/images/baidu_image_search_225586e4-9f56-4cd9-89e5-fdbbaca317ac.jpg" alt="蜡染纹样" class="w-28 h-28 md:w-40 md:h-40 object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity" />
+        </div>
+      </a>
+      <a href="#workshop" class="group bg-card border border-border rounded-2xl p-8 hover:border-primary transition-all">
+        <span class="text-xs text-muted-foreground">02</span>
+        <h3 class="font-['SourceHanSerifCN',serif] text-2xl font-bold text-primary mt-2 mb-3">AI纹样工坊</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">输入主题词与类别，AI生成全新纹样图案，并输出纹样命名与寓意解读。</p>
+      </a>
+      <a href="#artisans" class="group bg-card border border-border rounded-2xl p-8 hover:border-primary transition-all">
+        <span class="text-xs text-muted-foreground">03</span>
+        <h3 class="font-['SourceHanSerifCN',serif] text-2xl font-bold text-primary mt-2 mb-3">守艺人展厅</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">展示非遗守艺人姓名、称号、擅长工艺与代表作品，连接传承与体验。</p>
+      </a>
+      <a href="#booking" class="group bg-primary text-primary-foreground rounded-2xl p-8 hover:opacity-95 transition-opacity">
+        <span class="text-xs text-primary-foreground/60">04</span>
+        <h3 class="font-['SourceHanSerifCN',serif] text-2xl font-bold mt-2 mb-3">体验预约</h3>
+        <p class="text-sm text-primary-foreground/80 leading-relaxed">选择守艺人、体验项目、日期与时段，提交预约并查看状态流转。</p>
+      </a>
+      <a href="#shop" class="group bg-card border border-border rounded-2xl p-8 hover:border-primary transition-all">
+        <span class="text-xs text-muted-foreground">05</span>
+        <h3 class="font-['SourceHanSerifCN',serif] text-2xl font-bold text-primary mt-2 mb-3">文创商城</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">非遗文创作品列表与详情，了解工艺说明与守艺人，支持在线下单。</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured patterns -->
+  <section id="patterns" class="bg-card/50 border-y border-border">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-20">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <span class="w-8 h-px bg-accent"></span>
+            <span class="text-xs tracking-[0.25em] text-accent uppercase">Curated Patterns</span>
+          </div>
+          <h2 class="font-['SourceHanSerifCN',serif] text-3xl md:text-4xl font-bold text-primary">精选纹样轮播</h2>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <article class="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary transition-all">
+          <div class="overflow-hidden">
+            <img src="https://miaoda-site-img.cdn.bcebos.com/images/baidu_image_search_225586e4-9f56-4cd9-89e5-fdbbaca317ac.jpg" alt="蜡染靛蓝白纹织物" class="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-700" />
+          </div>
+          <div class="p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full">蜡染</span>
+              <span class="text-xs text-muted-foreground">2024.03.15</span>
+            </div>
+            <h3 class="font-['SourceHanSerifCN',serif] text-lg font-bold text-primary">蝶恋花靛蓝纹</h3>
+            <p class="text-xs text-muted-foreground mt-2">贵州 · 丹寨</p>
+          </div>
+        </article>
+        <article class="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary transition-all">
+          <div class="overflow-hidden">
+            <img src="https://miaoda-site-img.cdn.bcebos.com/images/baidu_image_search_69d24cd9-bd4d-432e-bd92-c1adc4378286.jpg" alt="苗绣彩色丝线纹样" class="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-700" />
+          </div>
+          <div class="p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full">苗绣</span>
+              <span class="text-xs text-muted-foreground">2024.05.02</span>
+            </div>
+            <h3 class="font-['SourceHanSerifCN',serif] text-lg font-bold text-primary">蝴蝶妈妈绣</h3>
+            <p class="text-xs text-muted-foreground mt-2">贵州 · 凯里</p>
+          </div>
+        </article>
+        <article class="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary transition-all">
+          <div class="overflow-hidden">
+            <img src="https://miaoda-site-img.cdn.bcebos.com/images/baidu_image_search_1fc81214-b2ea-4437-8b96-909fee7a813d.jpg" alt="苗族银饰工艺" class="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-700" />
+          </div>
+          <div class="p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full">扎染</span>
+              <span class="text-xs text-muted-foreground">2024.06.18</span>
+            </div>
+            <h3 class="font-['SourceHanSerifCN',serif] text-lg font-bold text-primary">云纹扎染布</h3>
+            <p class="text-xs text-muted-foreground mt-2">云南 · 大理</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-background border-t border-border">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-12">
+      <div class="flex flex-col md:flex-row items-start justify-between gap-8">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="font-['SourceHanSerifCN',serif] text-xl font-bold tracking-widest text-primary">纹藏</span>
+          </div>
+          <p class="text-sm text-muted-foreground max-w-sm leading-relaxed">非遗染织刺绣数字平台，记录经典纹样，续写新生纹样，连接守艺人。</p>
+        </div>
+        <div class="text-sm text-muted-foreground space-y-2">
+          <p>纹样图库 · AI纹样工坊</p>
+          <p>守艺人展厅 · 体验预约</p>
+          <p>文创商城 · 个人中心</p>
+        </div>
+      </div>
+      <div class="mt-10 pt-6 border-t border-border text-xs text-muted-foreground text-center">© 2026 纹藏 · 非遗染织刺绣数字平台</div>
+    </div>
+  </footer>
+
+  <!-- P4 丢弃以下全部 data-preview-only 脚本 -->
+  <script src="https://code.bdstatic.com/npm/tailwindcss-intersect@2.2.0/dist/observer.min.js" data-preview-only></script>
+  <script type="module" data-preview-only>
+    import { animate, inView, scroll, stagger } from "https://cdn.jsdelivr.net/npm/motion@12.23.25/+esm";
+    Object.assign(window, { animate, inView, scroll, stagger });
+    document.dispatchEvent(new Event('motion:ready'));
+  </script>
+  <script data-preview-only>
+    /* motion 函数由上面的 module 异步挂到 window；解构必须在此回调内，顶层解构会拿到 undefined */
+    document.addEventListener('motion:ready', () => {
+      const { animate, inView, scroll, stagger } = window;
+      /* ===== MOTION-SCRIPT:BEGIN ===== */
+      /* ===== MOTION-SCRIPT:END ===== */
+    });
+  </script>
+</body>
+</html>

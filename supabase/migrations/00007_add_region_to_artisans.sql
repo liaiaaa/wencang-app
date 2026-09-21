@@ -1,0 +1,1 @@
+alter table artisans add column region text;

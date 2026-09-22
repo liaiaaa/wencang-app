@@ -15,6 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import useGoBack from "@/hooks/use-go-back";
 import { fetchPatternById, fetchPatterns } from "@/lib/api";
 import { track } from "@/lib/analytics";
 import { pickRelatedPatterns, cleanList } from "@/lib/related";
@@ -22,6 +23,15 @@ import type { Pattern } from "@/types/types";
 
 export default function PatternDetailPage() {
   const { id } = useParams<{ id: string }>();
+  // 路由参数从 :id=A 变成 :id=B 时，React 复用同一个组件实例（元素类型与位置都没变），
+  // 于是上一篇的 state 会短暂留在新页面上——相关纹样里"多出"一条看着像重复的纹样就是这么来的。
+  // 用 id 作 key 强制重挂载，切换纹样必然从干净状态开始取数。
+  return <PatternDetail key={id ?? ""} id={id} />;
+}
+
+function PatternDetail({ id }: { id?: string }) {
+  // 返回图库走历史后退，列表页才能恢复到离开前的浏览位置
+  const goBackToList = useGoBack("/patterns");
   const [pattern, setPattern] = useState<Pattern | null>(null);
   const [related, setRelated] = useState<Pattern[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,8 +77,8 @@ export default function PatternDetailPage() {
     return (
       <div className="mx-auto max-w-5xl px-4 py-24 text-center md:px-8">
         <p className="text-muted-foreground">纹样不存在或已被移除</p>
-        <Button asChild variant="outline" className="mt-4">
-          <Link to="/patterns">返回图库</Link>
+        <Button variant="outline" className="mt-4" onClick={goBackToList}>
+          返回图库
         </Button>
       </div>
     );
@@ -76,11 +86,14 @@ export default function PatternDetailPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-8 md:py-12">
-      <Button asChild variant="ghost" size="sm" className="mb-6 -ml-2 text-muted-foreground hover:text-primary">
-        <Link to="/patterns">
-          <ArrowLeft className="mr-1 h-4 w-4" />
-          返回图库
-        </Link>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={goBackToList}
+        className="mb-6 -ml-2 text-muted-foreground hover:text-primary"
+      >
+        <ArrowLeft className="mr-1 h-4 w-4" />
+        返回图库
       </Button>
 
       <div className="grid gap-8 md:grid-cols-2 md:gap-10">

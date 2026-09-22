@@ -30,9 +30,9 @@ import type { Artisan, Product } from "@/types/types";
  *  3) 前台渲染   —— 有 id 才可点，无 id / 无效 id 保持纯文本且不报错
  * ============================================================ */
 
-const YANG_ANI = "a0000001-0000-4000-8000-000000000001"; // 苗绣 · 杨阿妮
-const WEEZU = "a0000002-0000-4000-8000-000000000002"; // 蜡染 · 韦祖英
-const PRODUCT_OF_YANG = "g0000002-0000-4000-8000-000000000002"; // 蝴蝶妈妈绣片摆件
+const A_MIAO = "a0000001-0000-4000-8000-000000000001"; // 苗绣 · 潘阿秀
+const A_WAX = "a0000002-0000-4000-8000-000000000002"; // 蜡染 · 韦小凤
+const PRODUCT_OF_A_MIAO = "g0000002-0000-4000-8000-000000000002"; // 蝴蝶妈妈绣片摆件
 
 const asAdmin = () =>
   supabase.auth.signInWithPassword({ email: "admin@miaoda.com", password: "wencang2026" });
@@ -60,14 +60,14 @@ const baseProduct = {
 
 describe("P1 · 守艺人关联派生", () => {
   const artisans = [
-    { id: YANG_ANI, name: "杨阿妮" },
-    { id: WEEZU, name: "韦祖英" },
+    { id: A_MIAO, name: "潘阿秀" },
+    { id: A_WAX, name: "韦小凤" },
   ];
 
   it("下拉选中守艺人后同时产出 artisan_id 与一致的 artisan_name", () => {
-    expect(resolveArtisanLink(YANG_ANI, artisans)).toEqual({
-      artisan_id: YANG_ANI,
-      artisan_name: "杨阿妮",
+    expect(resolveArtisanLink(A_MIAO, artisans)).toEqual({
+      artisan_id: A_MIAO,
+      artisan_name: "潘阿秀",
     });
   });
 
@@ -81,36 +81,36 @@ describe("P1 · 守艺人关联派生", () => {
   });
 
   it("守艺人不在列表（已归档/被删）时保留原有名字，不静默丢数据", () => {
-    expect(resolveArtisanLink("a-gone", artisans, "韦祖英")).toEqual({
+    expect(resolveArtisanLink("a-gone", artisans, "韦小凤")).toEqual({
       artisan_id: "a-gone",
-      artisan_name: "韦祖英",
+      artisan_name: "韦小凤",
     });
   });
 
   it("老数据按 artisan_name 反查补齐 id，查不到的保持原样且不报错", () => {
     const rows: { artisan_id?: string | null; artisan_name?: string }[] = [
-      { artisan_id: null, artisan_name: "韦祖英" }, // 可反查
+      { artisan_id: null, artisan_name: "韦小凤" }, // 可反查
       { artisan_id: null, artisan_name: "查无此人" }, // 不可反查
-      { artisan_id: YANG_ANI, artisan_name: "" }, // 反向补名字
+      { artisan_id: A_MIAO, artisan_name: "" }, // 反向补名字
       {}, // 两列皆缺
     ];
     expect(() => backfillArtisanLinks(rows, artisans)).not.toThrow();
-    expect(rows[0].artisan_id).toBe(WEEZU);
+    expect(rows[0].artisan_id).toBe(A_WAX);
     expect(rows[1].artisan_id).toBeNull();
     expect(rows[1].artisan_name).toBe("查无此人");
-    expect(rows[2].artisan_name).toBe("杨阿妮");
+    expect(rows[2].artisan_name).toBe("潘阿秀");
     expect(rows[3]).toEqual({});
   });
 
   it("前台只保留指向在架守艺人的关联，无效 id 清空为未关联", () => {
-    const live = new Set<string>([YANG_ANI]);
+    const live = new Set<string>([A_MIAO]);
     const rows: Pick<Product, "id" | "artisan_id" | "artisan_name">[] = [
-      { id: "1", artisan_id: YANG_ANI, artisan_name: "杨阿妮" },
+      { id: "1", artisan_id: A_MIAO, artisan_name: "潘阿秀" },
       { id: "2", artisan_id: "a-not-exist", artisan_name: "已消失的守艺人" },
       { id: "3", artisan_id: null, artisan_name: "老数据守艺人" },
     ];
     const out = keepLiveArtisanLinks(rows, live);
-    expect(out[0].artisan_id).toBe(YANG_ANI);
+    expect(out[0].artisan_id).toBe(A_MIAO);
     expect(out[1].artisan_id).toBeNull();
     expect(out[1].artisan_name).toBe("已消失的守艺人"); // 只断链，不丢名字
     expect(out[2].artisan_id).toBeNull();
@@ -141,13 +141,13 @@ describe("P1 · 数据层关联一致性", () => {
 
   it("管理员创建商品时 artisan_id 与 artisan_name 一并正确写入", async () => {
     // 表单里残留的旧名字会被下拉选中的守艺人覆盖，两列不可能各说各话
-    const created = await submitFromDropdown(YANG_ANI, "手填的旧名字");
-    expect(created.artisan_id).toBe(YANG_ANI);
-    expect(created.artisan_name).toBe("杨阿妮");
+    const created = await submitFromDropdown(A_MIAO, "手填的旧名字");
+    expect(created.artisan_id).toBe(A_MIAO);
+    expect(created.artisan_name).toBe("潘阿秀");
 
     const row = (await fetchProducts()).find((p) => p.id === created.id);
-    expect(row?.artisan_id).toBe(YANG_ANI);
-    expect(row?.artisan_name).toBe(admins.find((a) => a.id === YANG_ANI)?.name);
+    expect(row?.artisan_id).toBe(A_MIAO);
+    expect(row?.artisan_name).toBe(admins.find((a) => a.id === A_MIAO)?.name);
   });
 
   it("不关联守艺人也能建商品，两列落空且不报错", async () => {
@@ -159,19 +159,19 @@ describe("P1 · 数据层关联一致性", () => {
   });
 
   it("仅有 artisan_name 的老数据：后台可反查补齐 id，但读取不擅自写库", async () => {
-    const id = await insertRawProduct({ ...baseProduct, artisan_name: "韦祖英" });
+    const id = await insertRawProduct({ ...baseProduct, artisan_name: "韦小凤" });
 
     const adminRow = (await fetchAllProductsAdmin()).find((p) => p.id === id);
-    expect(adminRow?.artisan_id).toBe(WEEZU); // 后台下拉能正确回显
+    expect(adminRow?.artisan_id).toBe(A_WAX); // 后台下拉能正确回显
 
     // 补齐只发生在读取层，前台仍视为未关联
     const publicRow = (await fetchProducts()).find((p) => p.id === id);
     expect(publicRow?.artisan_id ?? null).toBeNull();
-    expect(publicRow?.artisan_name).toBe("韦祖英");
+    expect(publicRow?.artisan_name).toBe("韦小凤");
 
     // 管理员保存后 id 才真正落库
     await updateProduct(id, resolveArtisanLink(adminRow?.artisan_id, admins));
-    expect((await fetchProductById(id))?.artisan_id).toBe(WEEZU);
+    expect((await fetchProductById(id))?.artisan_id).toBe(A_WAX);
   });
 
   it("名字反查不到时 artisan_id 保持 null，前后端都不报错", async () => {
@@ -201,15 +201,15 @@ describe("P1 · 数据层关联一致性", () => {
   it("守艺人归档后，其商品在前台回落为纯文本", async () => {
     const id = await insertRawProduct({
       ...baseProduct,
-      artisan_id: YANG_ANI,
-      artisan_name: "杨阿妮",
+      artisan_id: A_MIAO,
+      artisan_name: "潘阿秀",
     });
-    expect((await fetchProductById(id))?.artisan_id).toBe(YANG_ANI);
+    expect((await fetchProductById(id))?.artisan_id).toBe(A_MIAO);
 
-    await supabase.from("artisans").update({ status: "archived" }).eq("id", YANG_ANI);
+    await supabase.from("artisans").update({ status: "archived" }).eq("id", A_MIAO);
     const after = await fetchProductById(id);
     expect(after?.artisan_id).toBeNull();
-    expect(after?.artisan_name).toBe("杨阿妮"); // 名字保留，仅去掉跳转
+    expect(after?.artisan_name).toBe("潘阿秀"); // 名字保留，仅去掉跳转
   });
 });
 
@@ -260,12 +260,12 @@ describe("P1 · 前台守艺人跳转", () => {
 
   it("商品详情页的守艺人姓名渲染为跳转链接", async () => {
     watchConsoleError();
-    const { container } = renderAt(`/shop/${PRODUCT_OF_YANG}`);
-    const href = `a[href="/artisans/${YANG_ANI}"]`;
+    const { container } = renderAt(`/shop/${PRODUCT_OF_A_MIAO}`);
+    const href = `a[href="/artisans/${A_MIAO}"]`;
     await waitFor(() => {
       expect(container.querySelector(href)).toBeTruthy();
     });
-    expect(container.querySelector(href)?.textContent).toContain("杨阿妮");
+    expect(container.querySelector(href)?.textContent).toContain("潘阿秀");
     expect(realErrors()).toHaveLength(0);
   });
 
@@ -273,9 +273,9 @@ describe("P1 · 前台守艺人跳转", () => {
     watchConsoleError();
     const { container } = renderAt("/shop");
     await waitFor(() => {
-      expect(artisanLines(container, "韦祖英")).toHaveLength(1);
+      expect(artisanLines(container, "韦小凤")).toHaveLength(1);
     });
-    const line = artisanLines(container, "韦祖英")[0];
+    const line = artisanLines(container, "韦小凤")[0];
     expect(isClickable(line)).toBe(true);
 
     fireEvent.click(line.firstElementChild as Element);
@@ -289,15 +289,15 @@ describe("P1 · 前台守艺人跳转", () => {
 
   it("老数据（只有 artisan_name）在商城与详情页均显示纯文本、不报错", async () => {
     await asAdmin();
-    const id = await insertRawProduct({ ...baseProduct, artisan_name: "韦祖英" });
+    const id = await insertRawProduct({ ...baseProduct, artisan_name: "韦小凤" });
     watchConsoleError();
 
     const { container } = renderAt("/shop");
     await waitFor(() => {
       // 种子商品（已关联）+ 老数据（未关联）同名同行出现，仅前者可点
-      expect(artisanLines(container, "韦祖英")).toHaveLength(2);
+      expect(artisanLines(container, "韦小凤")).toHaveLength(2);
     });
-    const lines = artisanLines(container, "韦祖英");
+    const lines = artisanLines(container, "韦小凤");
     expect(lines.filter(isClickable)).toHaveLength(1);
     expect(lines.filter((l) => !isClickable(l))).toHaveLength(1);
 
@@ -305,7 +305,7 @@ describe("P1 · 前台守艺人跳转", () => {
     await waitFor(() => {
       expect(detail.container.textContent).toContain("验收商品·靛蓝绣片");
     });
-    expect(detail.container.textContent).toContain("出自 · 韦祖英");
+    expect(detail.container.textContent).toContain("出自 · 韦小凤");
     expect(detail.container.querySelector('a[href^="/artisans/"]')).toBeNull();
     expect(realErrors()).toHaveLength(0);
   });

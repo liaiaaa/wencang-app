@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 import { fetchPlatformStats, fetchFeaturedPatterns } from "@/lib/api";
 import type { PlatformStats, Pattern } from "@/types/types";
 
@@ -53,6 +54,7 @@ const features = [
 ];
 
 export default function HomePage() {
+  const { session, username } = useAuth();
   const [stats, setStats] = useState<PlatformStats>({ patternCount: 0, artisanCount: 0, projectCount: 0 });
   const [patterns, setPatterns] = useState<Pattern[]>([]);
   const [loading, setLoading] = useState(true);
@@ -255,17 +257,19 @@ export default function HomePage() {
       <section id="cta" className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-20">
         <div className="overflow-hidden rounded-xl bg-primary px-6 py-12 text-center md:px-12 md:py-16">
           <p className="num-label text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">
-            加入纹藏
+            {session ? "欢迎回来" : "加入纹藏"}
           </p>
           <h2 className="mx-auto mt-4 max-w-2xl font-serif-cn text-2xl font-bold leading-tight text-primary-foreground md:text-4xl text-balance">
-            注册账号，开启你的非遗探索之旅
+            {session ? "继续你的非遗探索之旅" : "注册账号，开启你的非遗探索之旅"}
           </h2>
           <p className="mx-auto mt-4 max-w-md text-pretty text-sm text-primary-foreground/80">
-            保存你创作的 AI 纹样，预约线下体验，收藏心仪的文创作品。
+            {session
+              ? `${username ? `${username}，` : ""}你保存的 AI 纹样、提交的预约与订单都在个人中心，随时继续。`
+              : "保存你创作的 AI 纹样，预约线下体验，收藏心仪的文创作品。"}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" variant="secondary">
-              <Link to="/login">立即注册</Link>
+              <Link to={session ? "/profile" : "/login"}>{session ? "进入我的纹藏" : "立即注册"}</Link>
             </Button>
             <Button
               asChild

@@ -1,7 +1,7 @@
 // ============================================================
 // P0-3 纹样档案深化 · 验收实测
 //
-// 覆盖：15 条详情页区块完整性 / 内容质量抽查 / Admin 编辑同步 /
+// 覆盖：全部种子纹样详情页区块完整性 / 内容质量抽查 / Admin 编辑同步 /
 //       缺失字段兼容 / 相关纹样跳转 / 375px 移动端不溢出
 //
 // 用法：先 `pnpm dev`，再 `node scripts/verify-archive.mjs`
@@ -179,7 +179,7 @@ async function main() {
       `),
     );
 
-  /* ---- 1. 15 条纹样详情页区块完整性 ---- */
+  /* ---- 1. 全部种子纹样详情页区块完整性 ---- */
   const allPatterns = await listPatterns();
   const ids = allPatterns.map((p) => p.id);
 
@@ -223,7 +223,7 @@ async function main() {
       info.steps >= 3 && info.storyLen >= 120 && info.scenes >= 2 && info.related >= 2;
     if (!ok) incomplete.push({ pid, ...info });
   }
-  record("1", `15 条纹样详情页区块完整`, incomplete.length === 0,
+  record("1", `${checked} 条纹样详情页区块完整`, incomplete.length === 0,
     `已检查 ${checked} 条，不完整 ${incomplete.length} 条`);
   if (incomplete.length) console.log("     明细:", JSON.stringify(incomplete.slice(0, 3)));
 

@@ -19,6 +19,7 @@ export function cleanList(v?: string[]): string[] {
  * 不变量：
  *   - 结果中不包含纹样自身；
  *   - 结果中不出现重复条目；
+ *   - 结果中不含已归档（软删除）的纹样——不依赖调用方传入的列表是否已过滤；
  *   - 推荐条数不超过 `limit`。
  */
 export function pickRelatedPatterns(
@@ -30,7 +31,7 @@ export function pickRelatedPatterns(
   const current = all.find((p) => p.id === currentId);
   if (!current) return [];
 
-  const others = all.filter((p) => p.id !== currentId);
+  const others = all.filter((p) => p.id !== currentId && p.status !== "archived");
   const byId = new Map(others.map((p) => [p.id, p]));
   const picked: Pattern[] = [];
   const seen = new Set<string>([currentId]);

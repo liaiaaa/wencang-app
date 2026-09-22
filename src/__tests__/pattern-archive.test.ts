@@ -84,8 +84,12 @@ describe("纹样档案 · 老数据字段兼容", () => {
 });
 
 describe("纹样档案 · 种子数据完整性", () => {
-  it("15 条纹样全部具备四项深化内容", () => {
-    expect(MOCK_PATTERNS).toHaveLength(15);
+  it("45 条纹样全部具备四项深化内容，且三类各 15 条", () => {
+    expect(MOCK_PATTERNS).toHaveLength(45);
+    const count = (c: Pattern["category"]) => MOCK_PATTERNS.filter((p) => p.category === c).length;
+    expect(count("蜡染")).toBe(15);
+    expect(count("扎染")).toBe(15);
+    expect(count("苗绣")).toBe(15);
 
     const incomplete: string[] = [];
     for (const p of MOCK_PATTERNS) {
@@ -95,12 +99,41 @@ describe("纹样档案 · 种子数据完整性", () => {
       const related = p.related_patterns ?? [];
 
       if (steps.length < 3) incomplete.push(`${p.name}: 工艺步骤 ${steps.length} < 3`);
-      if (story.length < 120) incomplete.push(`${p.name}: 故事 ${story.length} 字 < 120`);
+      if (story.length < 150) incomplete.push(`${p.name}: 故事 ${story.length} 字 < 150`);
+      if (story.length > 260) incomplete.push(`${p.name}: 故事 ${story.length} 字 > 260`);
       if (scenes.length < 2) incomplete.push(`${p.name}: 应用场景 ${scenes.length} < 2`);
       if (related.length < 2) incomplete.push(`${p.name}: 相关纹样 ${related.length} < 2`);
     }
 
     expect(incomplete).toEqual([]);
+  });
+
+  it("工艺步骤符合三类各自的真实工序顺序", () => {
+    const order = (steps: string[]) => steps.map((s) => s.split("：")[0]);
+    const first = (steps: string[], kw: string) =>
+      steps.findIndex((s) => s.startsWith(kw));
+
+    for (const p of MOCK_PATTERNS) {
+      const steps = p.process_steps ?? [];
+      expect(steps.length, `${p.name} 工序缺失`).toBeGreaterThanOrEqual(5);
+
+      if (p.category === "蜡染") {
+        // 褪浆 → 融蜡 → 点蜡 → 靛染 → 脱蜡 → 漂洗
+        expect(first(steps, "布料褪浆"), `${p.name} 缺褪浆`).toBe(0);
+        expect(first(steps, "靛蓝浸染"), `${p.name} 靛染应在点蜡之后`).toBeGreaterThan(first(steps, "点蜡绘纹"));
+        expect(first(steps, "沸水脱蜡"), `${p.name} 脱蜡应在靛染之后`).toBeGreaterThan(first(steps, "靛蓝浸染"));
+      } else if (p.category === "扎染") {
+        // 构图 → 扎结 → 浸泡 → 染色 → 拆线 → 漂洗
+        expect(first(steps, "设计构图"), `${p.name} 缺构图`).toBe(0);
+        expect(first(steps, "拆线"), `${p.name} 拆线应在染色之后`).toBeGreaterThan(first(steps, "入缸染色"));
+        expect(first(steps, "拆线") < steps.length, `${p.name} 拆线应在漂洗之前`).toBe(true);
+      } else {
+        // 拓样 → 配线 → 上绷 → 施针 → 收口 → 整烫
+        expect(order(steps)[0], `${p.name} 首序应为拓样`).toBe("拓样上稿");
+        expect(first(steps, "施针"), `${p.name} 施针应在上绷之后`).toBeGreaterThan(first(steps, "上绷固定"));
+        expect(steps[steps.length - 1].startsWith("整烫"), `${p.name} 末序应为整烫`).toBe(true);
+      }
+    }
   });
 
   it("相关纹样 id 均指向真实存在的纹样，且不指向自身", () => {

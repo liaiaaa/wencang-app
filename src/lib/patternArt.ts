@@ -107,11 +107,10 @@ const SECONDARY_AFFINITY: Record<MotifId, MotifId> = {
 };
 
 /**
- * 主题词 → 基元序列。
- * 返回 [主基元, 辅基元?]：命中多个关键词时取前两个叠层；
- * 只命中一个时补一个搭配基元；完全没命中时按类别取默认。
+ * 主题词命中的基元序列（不含搭配补位）。
+ * 单独导出是为了让调用方能区分"真的命中了关键词"与"没命中、走了类别兜底"。
  */
-export function resolveMotifs(theme: string, category: PatternCategory): MotifId[] {
+export function keywordHits(theme: string): MotifId[] {
   const text = theme.trim();
   const hits: MotifId[] = [];
   for (const { motif, words } of KEYWORD_MAP) {
@@ -119,6 +118,16 @@ export function resolveMotifs(theme: string, category: PatternCategory): MotifId
       hits.push(motif);
     }
   }
+  return hits;
+}
+
+/**
+ * 主题词 → 基元序列。
+ * 返回 [主基元, 辅基元?]：命中多个关键词时取前两个叠层；
+ * 只命中一个时补一个搭配基元；完全没命中时按类别取默认。
+ */
+export function resolveMotifs(theme: string, category: PatternCategory): MotifId[] {
+  const hits = keywordHits(theme);
 
   if (hits.length === 0) {
     const fallback = CATEGORY_DEFAULT[category];
@@ -198,92 +207,142 @@ function polar(cx: number, cy: number, radius: number, deg: number): [number, nu
 
 /* ---------------- 五组基元 ---------------- */
 
-/** 蝴蝶：对称双翼 + 卷草触须 */
+/** 蝴蝶：对称双翼 + 卷草触须 + 花纹点缀 + 边框装饰 */
 function motifButterfly(ctx: Ctx): MotifArt {
   const { p, rng } = ctx;
   const wingFill = rng.next() < 0.5 ? p.indigo : p.indigoMid;
   const spot = p.bg;
-
-  const wing = `
+  
+  // 翅膀主轮廓（粗线条）
+  const mainWing = `
     <path d="M0,-18 C 30,-58 76,-66 94,-40 C 106,-22 86,-2 56,3 C 32,6 12,-2 0,-18 Z"
-          fill="${wingFill}" stroke="${p.indigoDark}" stroke-width="3" stroke-linejoin="round"/>
+          fill="${wingFill}" stroke="${p.indigoDark}" stroke-width="4" stroke-linejoin="round"/>
     <path d="M0,6 C 26,28 62,42 68,64 C 72,82 52,90 34,80 C 18,71 6,46 0,30 Z"
-          fill="${p.indigoMid}" stroke="${p.indigoDark}" stroke-width="3" stroke-linejoin="round"/>
-    <circle cx="58" cy="-34" r="11" fill="${spot}" opacity="0.9"/>
-    <circle cx="40" cy="52" r="7" fill="${spot}" opacity="0.85"/>
-  `;
-
+          fill="${p.indigoMid}" stroke="${p.indigoDark}" stroke-width="4" stroke-linejoin="round"/>`;
+  
+  // 翅膀内部纹理（点状/斜线填充）
+  const wingTexture = rng.next() < 0.5 
+    ? `<circle cx="58" cy="-34" r="11" fill="${spot}" opacity="0.9"/><circle cx="40" cy="52" r="7" fill="${spot}" opacity="0.85"/>`
+    : `<line x1="50" y1="-30" x2="70" y2="-40" stroke="${p.indigoLight}" stroke-width="2" opacity="0.6"/>
+       <line x1="45" y1="45" x2="55" y2="55" stroke="${p.indigoLight}" stroke-width="2" opacity="0.6"/>`;
+  
+  // 触须卷草（带螺旋细节）
   const antenna = `
     <path d="M-4,-56 C -16,-80 -36,-92 -54,-88 C -66,-85 -68,-72 -58,-67"
           fill="none" stroke="${p.indigoDark}" stroke-width="5" stroke-linecap="round"/>
     <circle cx="-58" cy="-67" r="4" fill="${p.indigoDark}"/>
-  `;
+    <circle cx="-62" cy="-70" r="2" fill="${p.accent}"/>`;
+  
+  // 边框装饰（四角小花）
+  const borderDecor = `
+    <circle cx="90" cy="-90" r="6" fill="${p.indigoLight}" opacity="0.7"/>
+    <circle cx="90" cy="90" r="6" fill="${p.indigoLight}" opacity="0.7"/>
+    <circle cx="-90" cy="-90" r="6" fill="${p.indigoLight}" opacity="0.7"/>
+    <circle cx="-90" cy="90" r="6" fill="${p.indigoLight}" opacity="0.7"/>`;
 
   return {
     svg: `
       <g>
-        ${wing}
-        <g transform="scale(-1,1)">${wing}</g>
+        ${mainWing}
+        <g transform="scale(-1,1)">${mainWing}</g>
+        ${wingTexture}
+        <g transform="scale(-1,1)">${wingTexture}</g>
         <g>${antenna}<g transform="scale(-1,1)">${antenna}</g></g>
         <ellipse cx="0" cy="-2" rx="7" ry="48" fill="${p.indigoDark}"/>
         <circle cx="0" cy="-56" r="9" fill="${p.indigoDark}"/>
         <circle cx="0" cy="-56" r="4.5" fill="${p.accent}"/>
         <circle cx="0" cy="10" r="4" fill="${p.bg}"/>
+        ${borderDecor}
       </g>`,
-    accentArea: Math.PI * 4.5 * 4.5,
+    accentArea: Math.PI * 4.5 * 4.5 + Math.PI * 2 * 2,
   };
 }
 
-/** 铜鼓：同心圆 + 太阳芒纹 + 翔鹭纹 */
+/** 铜鼓：同心圆 + 太阳芒纹 + 翔鹭纹 + 云雷纹边饰 */
 function motifDrum(ctx: Ctx): MotifArt {
   const { p, rng } = ctx;
   const rayCount = rng.pick([12, 16]);
-  const birdCount = 8;
+  const birdCount = rng.pick([8, 10, 12]);
 
+  // 同心圆（不同粗细）
+  const concentricCircles = `
+    <circle cx="0" cy="0" r="98" fill="none" stroke="${p.indigoDark}" stroke-width="6"/>
+    <circle cx="0" cy="0" r="92" fill="none" stroke="${p.indigo}" stroke-width="3"/>
+    <circle cx="0" cy="0" r="66" fill="none" stroke="${p.indigoDark}" stroke-width="5"/>
+    <circle cx="0" cy="0" r="42" fill="${p.indigo}"/>
+    <circle cx="0" cy="0" r="24" fill="${p.bg}"/>`;
+
+  // 太阳芒纹（带渐变效果）
   let rays = "";
   for (let i = 0; i < rayCount; i++) {
-    rays += `<path d="M0,-46 L7,-62 L0,-70 L-7,-62 Z" fill="${p.indigo}" transform="rotate(${n(
-      (360 / rayCount) * i,
-    )})"/>`;
+    const angle = (360 / rayCount) * i;
+    rays += `<path d="M0,-46 L${n(6 * Math.cos((angle - 90) * Math.PI / 180))},${n(-62)} 
+             L0,-70 L${n(-6 * Math.cos((angle - 90) * Math.PI / 180))},${n(-62)} Z" 
+             fill="${rng.next() < 0.5 ? p.indigo : p.indigoMid}" 
+             transform="rotate(${n(angle)})"/>`;
   }
 
+  // 翔鹭纹（更精细的鸟形）
   let birds = "";
   for (let i = 0; i < birdCount; i++) {
     const a = (360 / birdCount) * i + 22.5;
+    const size = rng.next() < 0.5 ? 12 : 14; // 大小变化
     birds += `<g transform="rotate(${n(a)}) translate(0,-84)">
-      <path d="M-15,0 Q0,-13 15,0 Q0,-5 -15,0 Z" fill="${p.indigoDark}"/>
-      <path d="M-6,-3 L-11,-11 M6,-3 L11,-11" stroke="${p.indigoDark}" stroke-width="2.5"
-            fill="none" stroke-linecap="round"/>
+      <path d="M-${size},0 Q0,-${size/2} ${size},0 Q0,${size/2} -${size},0 Z" 
+            fill="${p.indigoDark}"/>
+      <line x1="-${size/3}" y1="-${size/4}" x2="-${size}" y2="-${size*0.8}" 
+            stroke="${p.indigoDark}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="${size/3}" y1="-${size/4}" x2="${size}" y2="-${size*0.8}" 
+            stroke="${p.indigoDark}" stroke-width="2" stroke-linecap="round"/>
     </g>`;
   }
+
+  // 云雷纹边饰（回纹装饰）
+  const cloudThunder = `
+    <path d="M0,-98 L14,-98 L14,-84 M14,-84 L-14,-84 L-14,-98" 
+          fill="none" stroke="${p.indigoLight}" stroke-width="2" opacity="0.6"/>
+    <path d="M0,98 L14,98 L14,84 M14,84 L-14,84 L-14,98" 
+          fill="none" stroke="${p.indigoLight}" stroke-width="2" opacity="0.6"/>
+    <path d="M-98,0 L-98,14 L-84,14 M-84,14 L-84,-14 L-98,-14" 
+          fill="none" stroke="${p.indigoLight}" stroke-width="2" opacity="0.6"/>
+    <path d="M98,0 L98,14 L84,14 M84,14 L84,-14 L98,-14" 
+          fill="none" stroke="${p.indigoLight}" stroke-width="2" opacity="0.6"/>`;
 
   return {
     svg: `
       <g>
-        <circle cx="0" cy="0" r="98" fill="none" stroke="${p.indigoDark}" stroke-width="6"/>
-        <circle cx="0" cy="0" r="92" fill="none" stroke="${p.indigo}" stroke-width="2"/>
-        ${birds}
-        <circle cx="0" cy="0" r="66" fill="none" stroke="${p.indigoDark}" stroke-width="4"/>
+        ${concentricCircles}
         ${rays}
-        <circle cx="0" cy="0" r="42" fill="${p.indigo}"/>
-        <circle cx="0" cy="0" r="24" fill="${p.bg}"/>
+        ${birds}
+        ${cloudThunder}
         <circle cx="0" cy="0" r="11" fill="${p.accent}"/>
       </g>`,
     accentArea: Math.PI * 11 * 11,
   };
 }
 
-/** 鱼纹：鱼形 + 水波漩涡（涡妥纹） */
+/** 鱼纹：鱼形 + 水波漩涡（涡妥纹）+ 鳞片纹理 */
 function motifFish(ctx: Ctx): MotifArt {
-  const { p } = ctx;
+  const { p, rng } = ctx;
 
-  // 涡妥纹：两侧对称的阿基米德螺线
+  // 涡妥纹：两侧对称的阿基米德螺线（更复杂）
   const swirl = (mirror: boolean) => `
     <g transform="${mirror ? "scale(-1,1)" : ""}">
-      <path d="${spiralPath(2.1, 30)}" transform="translate(-104 0)"
-            fill="none" stroke="${p.indigoMid}" stroke-width="4" stroke-linecap="round"/>
-      <circle cx="-104" cy="0" r="5" fill="${p.indigoDark}"/>
-    </g>`;
+      <path d="${spiralPath(2.3, 35)}" transform="translate(-108 0)"
+            fill="none" stroke="${p.indigoMid}" stroke-width="4.5" stroke-linecap="round"/>
+      <circle cx="-108" cy="0" r="6" fill="${p.indigoDark}"/>
+      <circle cx="-112" cy="0" r="3" fill="${p.accent}"/>`;
+
+  // 鱼鳞纹理（点状/网格变化）
+  const scales = rng.next() < 0.5
+    ? `<circle cx="-50" cy="-20" r="3" fill="${p.indigoLight}" opacity="0.7"/>
+       <circle cx="-50" cy="20" r="3" fill="${p.indigoLight}" opacity="0.7"/>
+       <circle cx="50" cy="-20" r="3" fill="${p.indigoLight}" opacity="0.7"/>
+       <circle cx="50" cy="20" r="3" fill="${p.indigoLight}" opacity="0.7"/>`
+    : `<line x1="-60" y1="-30" x2="-40" y2="-20" stroke="${p.indigoLight}" stroke-width="2" opacity="0.5"/>
+       <line x1="-60" y1="30" x2="-40" y2="20" stroke="${p.indigoLight}" stroke-width="2" opacity="0.5"/>
+       <line x1="60" y1="-30" x2="40" y2="-20" stroke="${p.indigoLight}" stroke-width="2" opacity="0.5"/>
+       <line x1="60" y1="30" x2="40" y2="20" stroke="${p.indigoLight}" stroke-width="2" opacity="0.5"/>`;
 
   return {
     svg: `
@@ -294,16 +353,17 @@ function motifFish(ctx: Ctx): MotifArt {
                  C 24,48 -52,42 -74,0 Z"
               fill="${p.indigo}" stroke="${p.indigoDark}" stroke-width="3.5" stroke-linejoin="round"/>
         <path d="M66,0 L100,-30 L88,0 L100,30 Z"
-              fill="${p.indigoMid}" stroke="${p.indigoDark}" stroke-width="3" stroke-linejoin="round"/>
+              fill="${p.indigoMid}" stroke="${p.indigoDark}" stroke-width="3.5" stroke-linejoin="round"/>
+        ${scales}
         <path d="M-30,-26 C -6,-34 18,-26 30,-8" fill="none" stroke="${p.indigoDark}"
-              stroke-width="3" opacity="0.7"/>
+              stroke-width="3.5" opacity="0.7"/>
         <path d="M-34,-4 C -10,-12 16,-4 30,12" fill="none" stroke="${p.indigoDark}"
-              stroke-width="3" opacity="0.7"/>
+              stroke-width="3.5" opacity="0.7"/>
         <circle cx="-42" cy="-11" r="9" fill="${p.bg}"/>
         <circle cx="-42" cy="-11" r="4.5" fill="${p.indigoDark}"/>
         <circle cx="34" cy="0" r="6" fill="${p.accent}"/>
       </g>`,
-    accentArea: Math.PI * 6 * 6,
+    accentArea: Math.PI * 6 * 6 + Math.PI * 3 * 3,
   };
 }
 
@@ -407,7 +467,8 @@ function place(
   };
 }
 
-const CANVAS = 1024;
+/** 画布边长：程序化配图（海报卡 / 头像）也按这个尺寸套版，故对外暴露 */
+export const CANVAS = 1024;
 const FRAME = 26;
 
 export interface PatternArt {

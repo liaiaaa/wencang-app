@@ -8,6 +8,7 @@
     "dev:cloud": "vite",
     "build": "tsc -b && vite build",
     "build:mock": "tsc -b && vite build --mode mock",
+    "build:gitee": "tsc -b && vite build --mode mock --base=/wencang-app/ --outDir dist-gitee && node scripts/gitee-postbuild.mjs",
     "lint": "tsc -b",
     "typecheck": "tsc -b",
     "preview": "vite preview",

@@ -123,9 +123,18 @@ export default function BookingPage() {
           </div>
 
           {selectedProject && (
-            <div className="rounded-md bg-secondary/50 p-4">
-              <p className="text-sm text-foreground">{selectedProject.description}</p>
-              <p className="mt-2 num-label text-xs text-muted-foreground">时长：{selectedProject.duration}</p>
+            <div className="flex gap-4 rounded-md bg-secondary/50 p-4">
+              {selectedProject.image_url && (
+                <img
+                  src={selectedProject.image_url}
+                  alt={selectedProject.name}
+                  className="h-20 w-20 shrink-0 rounded-md border border-border object-cover"
+                />
+              )}
+              <div className="min-w-0">
+                <p className="text-sm text-foreground">{selectedProject.description}</p>
+                <p className="mt-2 num-label text-xs text-muted-foreground">时长：{selectedProject.duration}</p>
+              </div>
             </div>
           )}
 

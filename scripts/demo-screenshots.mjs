@@ -291,7 +291,7 @@ async function main() {
   await step("提交预约 /booking", async () => {
     await cdp.goto(`${BASE}/booking`, 2000);
     await inject();
-    await cdp.eval(`window.__t.selectByIndex(0, '韦祖英')`);
+    await cdp.eval(`window.__t.selectByIndex(0, '韦小凤')`);
     await cdp.eval(`window.__t.selectByIndex(1, '蜡染工艺体验')`);
     const d = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10);
     await cdp.eval(`window.__t.fill('input[type="date"]', '${d}')`);

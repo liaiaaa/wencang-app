@@ -10,6 +10,7 @@ import {
   TrendingUp,
   Archive,
   Loader2,
+  RefreshCw,
 } from "lucide-react";
 import {
   LineChart,
@@ -22,6 +23,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -45,6 +47,7 @@ import {
   updateProduct,
   archiveProduct,
   restoreProduct,
+  resetDemoContent,
   type AdminOverview,
   type PatternInput,
   type ArtisanInput,
@@ -184,6 +187,22 @@ export default function AdminDashboardPage() {
     if (role === "admin") loadAll();
   }, [role, loadAll]);
 
+  /* 重置演示内容：答辩前一键回到干净的种子数据（用户账号与预约保留） */
+  const [resetting, setResetting] = useState(false);
+  const handleResetDemo = useCallback(async () => {
+    setResetting(true);
+    try {
+      await resetDemoContent();
+      toast.success("演示数据已重置为初始状态");
+      await loadAll();
+    } catch (err) {
+      const e = err as Error & { code?: string };
+      toast.error(e.code === "403" ? "仅管理员可执行该操作" : e.message || "重置失败");
+    } finally {
+      setResetting(false);
+    }
+  }, [loadAll]);
+
   const trend = getDailyTrend(7);
   const topPatterns = getTopPatterns(5);
   const trendTotal = trend.reduce((s, d) => s + d.booking + d.generate, 0);
@@ -297,6 +316,8 @@ export default function AdminDashboardPage() {
               topPatterns={topPatterns}
               demoCount={demoCount}
               eventTotal={eventTotal}
+              resetting={resetting}
+              onReset={handleResetDemo}
             />
           )}
 
@@ -383,6 +404,8 @@ function OverviewSection({
   topPatterns,
   demoCount,
   eventTotal,
+  resetting,
+  onReset,
 }: {
   overview: AdminOverview | null;
   loading: boolean;
@@ -391,6 +414,8 @@ function OverviewSection({
   topPatterns: ReturnType<typeof getTopPatterns>;
   demoCount: number;
   eventTotal: number;
+  resetting: boolean;
+  onReset: () => void;
 }) {
   const cards = [
     { label: "纹样总数", value: overview?.patternCount, icon: Brush },
@@ -403,6 +428,28 @@ function OverviewSection({
 
   return (
     <div className="space-y-6">
+      {/* 演示数据维护：只重建内容表，账号与预约保留 */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-muted-foreground">
+          概况数字均来自本地数据层，与各管理列表同源
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onReset}
+          disabled={resetting}
+          title="按当前版本重新播种纹样 / 守艺人 / 商品 / 体验项目；用户账号与预约、订单保留"
+          className="shrink-0"
+        >
+          {resetting ? (
+            <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
+          )}
+          重置演示数据
+        </Button>
+      </div>
+
       {/* 指标卡 */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
         {cards.map((c) => (

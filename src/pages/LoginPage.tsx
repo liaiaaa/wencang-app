@@ -11,6 +11,23 @@ import { Loader2 } from "lucide-react";
 
 const USERNAME_RE = /^[A-Za-z0-9_]+$/;
 
+/**
+ * 认证失败的中文提示。
+ * 数据层（含云端 supabase-js）返回的是英文错误信息，直接抛给用户只会让人以为功能坏了，
+ * 因此这里统一翻译；取不到 message 时也给出可读文案，绝不静默失败。
+ */
+export function authErrorMessage(err: unknown): string {
+  const raw =
+    err instanceof Error
+      ? err.message
+      : typeof err === "string"
+        ? err
+        : ((err as { message?: string } | null)?.message ?? "");
+  if (/invalid login credentials/i.test(raw)) return "用户名或密码错误";
+  if (/already registered|already exists|user already/i.test(raw)) return "该用户名已被注册";
+  return raw || "操作失败，请稍后重试";
+}
+
 export default function LoginPage() {
   const { session, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -59,8 +76,7 @@ export default function LoginPage() {
       }
       navigate(from, { replace: true });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "操作失败";
-      toast.error(msg.includes("Invalid login") ? "用户名或密码错误" : msg);
+      toast.error(authErrorMessage(err));
     } finally {
       setLoading(false);
     }

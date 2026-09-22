@@ -46,6 +46,8 @@ export interface ExperienceProject {
   description: string;
   duration: string;
   created_at: string;
+  /** 体验项目配图；缺省时由读取层按工艺类别程序化生成 */
+  image_url?: string;
 }
 
 export type BookingStatus = "待确认" | "已确认" | "已完成";

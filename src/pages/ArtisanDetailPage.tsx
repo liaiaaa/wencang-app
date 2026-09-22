@@ -5,11 +5,14 @@ import { ArrowLeft, Award, Scissors, Sparkles, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import useGoBack from "@/hooks/use-go-back";
 import { fetchArtisanById } from "@/lib/api";
 import type { Artisan } from "@/types/types";
 
 export default function ArtisanDetailPage() {
   const { id } = useParams<{ id: string }>();
+  // 返回展厅走历史后退，列表页才能恢复到离开前的浏览位置
+  const goBackToList = useGoBack("/artisans");
   const [artisan, setArtisan] = useState<Artisan | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -41,8 +44,8 @@ export default function ArtisanDetailPage() {
     return (
       <div className="mx-auto max-w-5xl px-4 py-24 text-center md:px-8">
         <p className="text-muted-foreground">守艺人信息不存在</p>
-        <Button asChild variant="outline" className="mt-4">
-          <Link to="/artisans">返回展厅</Link>
+        <Button variant="outline" className="mt-4" onClick={goBackToList}>
+          返回展厅
         </Button>
       </div>
     );
@@ -52,11 +55,14 @@ export default function ArtisanDetailPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-8 md:py-12">
-      <Button asChild variant="ghost" size="sm" className="mb-6 -ml-2 text-muted-foreground hover:text-primary">
-        <Link to="/artisans">
-          <ArrowLeft className="mr-1 h-4 w-4" />
-          返回展厅
-        </Link>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={goBackToList}
+        className="mb-6 -ml-2 text-muted-foreground hover:text-primary"
+      >
+        <ArrowLeft className="mr-1 h-4 w-4" />
+        返回展厅
       </Button>
 
       <div className="grid gap-8 md:grid-cols-2 md:gap-10">

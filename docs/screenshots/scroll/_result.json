@@ -1,0 +1,89 @@
+{
+  "results": [
+    {
+      "id": "0a",
+      "label": "滚动容器为 window（页面内没有 overflow 滚动容器）",
+      "pass": true,
+      "detail": "{\"winScrollable\":true,\"docOverflowY\":\"visible\",\"mainOverflowY\":\"visible\",\"innerScrollers\":[]}"
+    },
+    {
+      "id": "1a",
+      "label": "起点确已滚到页面深处",
+      "pass": true,
+      "detail": "scrollY=6717"
+    },
+    {
+      "id": "1b",
+      "label": "图库 → 守艺人展厅：新页面从顶部开始",
+      "pass": true,
+      "detail": "scrollY=0 · 守艺人展厅"
+    },
+    {
+      "id": "2",
+      "label": "详情页下滑 → 点相关纹样：回到顶部且内容已切换（蝶恋花靛蓝纹 → 铜鼓纹蜡染）",
+      "pass": true,
+      "detail": "scrollY=0"
+    },
+    {
+      "id": "3",
+      "label": "首页 → 文创商城：回到顶部",
+      "pass": true,
+      "detail": "scrollY=0"
+    },
+    {
+      "id": "4",
+      "label": "守艺人列表下滑 → 详情：回到顶部",
+      "pass": true,
+      "detail": "scrollY=0"
+    },
+    {
+      "id": "5",
+      "label": "后台切 tab（?tab=）也回顶（切前 scrollY=4073）",
+      "pass": true,
+      "detail": "scrollY=0 · /admin?tab=products"
+    },
+    {
+      "id": "C-图库",
+      "label": "图库：下滑 3023 → 进详情（顶部 0）→ 返回图库 → 恢复 3023",
+      "pass": true,
+      "detail": "y0=3023 / 详情=0 / 返回后=3023"
+    },
+    {
+      "id": "C-商城",
+      "label": "商城：下滑 820 → 进详情（顶部 0）→ 返回商城 → 恢复 820",
+      "pass": true,
+      "detail": "y0=820 / 详情=0 / 返回后=820"
+    },
+    {
+      "id": "C-守艺人展厅",
+      "label": "守艺人展厅：下滑 1125 → 进详情（顶部 0）→ 返回展厅 → 恢复 1125",
+      "pass": true,
+      "detail": "y0=1125 / 详情=0 / 返回后=1125"
+    },
+    {
+      "id": "C-后退键",
+      "label": "浏览器后退键恢复到 3023（离开时 3023）",
+      "pass": true,
+      "detail": "差值 0px"
+    },
+    {
+      "id": "C-fallback",
+      "label": "身后无历史时点返回 → 落到图库路径且位于顶部",
+      "pass": true,
+      "detail": "/patterns · scrollY=0"
+    },
+    {
+      "id": "6",
+      "label": "前进/后退导航不产生报错",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "7",
+      "label": "全程控制台无异常报错",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "consoleErrors": []
+}

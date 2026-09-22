@@ -16,6 +16,7 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { backfillArtisanLinks } from "@/lib/productLink";
+import { SEED_VERSION } from "./mockData";
 import {
   MOCK_ARTISANS,
   MOCK_PATTERNS,
@@ -43,6 +44,8 @@ type TableName =
 
 const STORAGE_KEY = "wenzang.mock.db.v1";
 const SESSION_KEY = "wenzang.mock.session.v1";
+/** 单独存种子版本号：与数据体分开，才不会因为删表而忘记版本 */
+const SEED_VERSION_KEY = "wenzang.mock.seed.v1";
 
 /** 需要按用户隔离的表（对应云端 RLS 策略） */
 const RLS_TABLES = new Set<TableName>(["bookings", "orders", "ai_patterns"]);
@@ -88,6 +91,16 @@ function migrateDb(tables: Record<TableName, Row[]>): Record<TableName, Row[]> {
   return tables;
 }
 
+/** 内容表：随种子版本重建（用户账号与预约、订单等用户数据不在其列） */
+const CONTENT_SEED_TABLES: TableName[] = ["patterns", "artisans", "products", "experience_projects"];
+
+function reseedContent(target: Record<TableName, Row[]>): void {
+  const fresh = seedTables();
+  CONTENT_SEED_TABLES.forEach((t) => {
+    target[t] = fresh[t];
+  });
+}
+
 function loadDb(): Record<TableName, Row[]> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -116,12 +129,39 @@ function persist() {
   }
 }
 
-/** 清空本地演示数据并恢复种子（供调试用：控制台执行 __wenzangMock.reset()） */
+function storedSeedVersion(): number {
+  try {
+    const n = Number(localStorage.getItem(SEED_VERSION_KEY));
+    return Number.isFinite(n) ? n : 0;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * 种子版本落后（含本地从未记过版本的老数据）时，把内容数据升级到当前版本。
+ * 老浏览器里存的还是 15 条纹样、3 位守艺人，代码却已经扩到 45/10——
+ * 不升级就会出现「首页统计与实际数据对不上」这类假故障。
+ * 只重建内容表：用户账号、预约、订单原样保留。
+ */
+function ensureSeedVersion(): void {
+  if (storedSeedVersion() === SEED_VERSION) return;
+  reseedContent(db);
+  migrateDb(db);
+  try {
+    localStorage.setItem(SEED_VERSION_KEY, String(SEED_VERSION));
+  } catch {
+    /* 忽略 */
+  }
+  persist();
+}
+
+ensureSeedVersion();
+
+/** 清空本地演示内容并恢复当前版本种子（供调试用：控制台执行 __wenzangMock.reset()） */
 export function resetMockDb() {
-  const fresh = seedTables();
-  (Object.keys(fresh) as TableName[]).forEach((t) => {
-    db[t] = fresh[t];
-  });
+  reseedContent(db);
+  migrateDb(db);
   persist();
 }
 
@@ -424,6 +464,65 @@ function makeSession(user: { id: string; email: string }): MockSession {
   return { access_token: "mock-token-" + user.id, token_type: "bearer", user };
 }
 
+/**
+ * 演示模式的账号表：种子账号 + 本地注册账号。
+ *
+ * 注册必须落盘。早先只往 MOCK_USERS 常量里 push，页面一刷新数组就回到种子状态，
+ * 表现为"刚注册完，退出就再也登不上"——账号凭空消失，用户只会认为登录坏了。
+ * 种子账号始终以代码为准（便于内置账号随版本更新），本地注册账号叠加在后面；
+ * 与内容表分开存放，因此"重置演示数据"不会把用户账号一起清掉。
+ */
+const USERS_KEY = "wenzang.mock.users.v1";
+
+interface MockAccount {
+  id: string;
+  email: string;
+  password: string;
+  role: "admin" | "user";
+}
+
+function loadAccounts(): MockAccount[] {
+  const seeded = () => MOCK_USERS.map((u) => ({ ...u }));
+  try {
+    const raw = localStorage.getItem(USERS_KEY);
+    if (!raw) return seeded();
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return seeded();
+    const builtin = new Set(MOCK_USERS.map((u) => u.email.toLowerCase()));
+    const local = parsed.filter(
+      (u: MockAccount) => u?.email && !builtin.has(String(u.email).toLowerCase()),
+    );
+    return [...seeded(), ...local];
+  } catch {
+    return seeded();
+  }
+}
+
+let accounts: MockAccount[] = loadAccounts();
+
+function persistAccounts() {
+  try {
+    localStorage.setItem(USERS_KEY, JSON.stringify(accounts));
+  } catch {
+    /* 隐私模式等场景下忽略 */
+  }
+}
+
+const findAccount = (email: string) =>
+  accounts.find((u) => String(u.email).toLowerCase() === String(email).toLowerCase());
+
+/** 认证错误返回真正的 Error 实例（与云端 supabase-js 行为一致），否则调用方 `err instanceof Error` 判不中，只能显示"操作失败" */
+function authError(message: string): Error {
+  return new Error(message);
+}
+
+/** 为账号补一条 profiles 记录（对应云端"注册自动建档"触发器），运营看板的注册用户数依赖它 */
+function ensureProfile(id: string, email: string, role: "admin" | "user") {
+  if (db.profiles.some((p) => p.id === id)) return;
+  db.profiles.push({ id, email, role, created_at: nowIso() });
+  persist();
+}
+
 const auth = {
   async getSession() {
     return { data: { session: currentSession }, error: null };
@@ -436,25 +535,30 @@ const auth = {
     return { data: { subscription: { unsubscribe: () => authListeners.delete(cb) } } };
   },
   async signInWithPassword({ email, password }: { email: string; password: string }) {
-    const found = MOCK_USERS.find(
-      (u) => u.email.toLowerCase() === String(email).toLowerCase() && u.password === password,
-    );
-    if (!found) {
-      return { data: { user: null, session: null }, error: { message: "Invalid login credentials" } };
+    const found = findAccount(email);
+    if (!found || found.password !== password) {
+      return {
+        data: { user: null, session: null },
+        error: authError("Invalid login credentials"),
+      };
     }
+    ensureProfile(found.id, found.email, found.role ?? "user");
     const session = makeSession({ id: found.id, email: found.email });
     setSession(session, "SIGNED_IN");
     return { data: { user: session.user, session }, error: null };
   },
   async signUp({ email, password }: { email: string; password: string }) {
-    const exists = MOCK_USERS.some((u) => u.email.toLowerCase() === String(email).toLowerCase());
-    if (exists) {
-      return { data: { user: null, session: null }, error: { message: "User already registered" } };
+    if (findAccount(email)) {
+      return {
+        data: { user: null, session: null },
+        error: authError("User already registered"),
+      };
     }
-    // 演示模式下新注册用户即时可用（不落盘到 MOCK_USERS 常量，仅本次会话有效）
-    const user = { id: uuid(), email };
-    MOCK_USERS.push({ id: user.id, email, password, role: "user" });
-    const session = makeSession(user);
+    const account: MockAccount = { id: uuid(), email, password, role: "user" };
+    accounts = [...accounts, account];
+    persistAccounts();
+    ensureProfile(account.id, account.email, account.role);
+    const session = makeSession({ id: account.id, email: account.email });
     setSession(session, "SIGNED_IN");
     return { data: { user: session.user, session }, error: null };
   },
@@ -533,7 +637,21 @@ const mockClient = {
     const email = currentUser?.email?.toLowerCase();
     if (!email) return null;
     if (email === MOCK_ADMIN_EMAIL) return "admin";
-    return "user";
+    return findAccount(email)?.role === "admin" ? "admin" : "user";
+  },
+  /**
+   * 演示模式专用：按当前版本重新播种内容数据（纹样 / 守艺人 / 商品 / 体验项目）。
+   * 权限与写接口一致——未登录 401、非管理员 403；用户账号与预约、订单不受影响。
+   */
+  resetDemoContent: (): { error: { message: string; code: string } | null } => {
+    if (!currentUser) return { error: { message: "未登录，无权执行该操作", code: "401" } };
+    if (mockClient.mockRole() !== "admin") {
+      return { error: { message: "仅管理员可维护内容数据", code: "403" } };
+    }
+    reseedContent(db);
+    migrateDb(db);
+    persist();
+    return { error: null };
   },
 };
 
@@ -541,7 +659,15 @@ export const isMockMode = true;
 
 export const supabase = mockClient as unknown as SupabaseClient;
 
+/** 当前演示数据的种子版本号（运营后台展示用，云端模式下不提供） */
+export const seedVersion = SEED_VERSION;
+
 // 便于在浏览器控制台调试：__wenzangMock.reset()
 if (typeof window !== "undefined") {
-  (window as any).__wenzangMock = { reset: resetMockDb, db, role: mockClient.mockRole };
+  (window as any).__wenzangMock = {
+    reset: resetMockDb,
+    db,
+    role: mockClient.mockRole,
+    seedVersion: SEED_VERSION,
+  };
 }

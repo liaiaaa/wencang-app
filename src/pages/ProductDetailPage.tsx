@@ -15,12 +15,15 @@ import {
 } from "@/components/ui/dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import useGoBack from "@/hooks/use-go-back";
 import { fetchProductById, createOrder } from "@/lib/api";
 import { track } from "@/lib/analytics";
 import type { Product } from "@/types/types";
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
+  // 返回商城走历史后退，列表页才能恢复到离开前的浏览位置
+  const goBackToList = useGoBack("/shop");
   const { session } = useAuth();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
@@ -99,8 +102,8 @@ export default function ProductDetailPage() {
     return (
       <div className="mx-auto max-w-5xl px-4 py-24 text-center md:px-8">
         <p className="text-muted-foreground">商品不存在</p>
-        <Button asChild variant="outline" className="mt-4">
-          <Link to="/shop">返回商城</Link>
+        <Button variant="outline" className="mt-4" onClick={goBackToList}>
+          返回商城
         </Button>
       </div>
     );
@@ -108,11 +111,14 @@ export default function ProductDetailPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-8 md:py-12">
-      <Button asChild variant="ghost" size="sm" className="mb-6 -ml-2 text-muted-foreground hover:text-primary">
-        <Link to="/shop">
-          <ArrowLeft className="mr-1 h-4 w-4" />
-          返回商城
-        </Link>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={goBackToList}
+        className="mb-6 -ml-2 text-muted-foreground hover:text-primary"
+      >
+        <ArrowLeft className="mr-1 h-4 w-4" />
+        返回商城
       </Button>
 
       <div className="grid gap-8 md:grid-cols-2 md:gap-10">

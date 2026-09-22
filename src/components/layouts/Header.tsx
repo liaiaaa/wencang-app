@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
-import { Menu, User as UserIcon, LogOut, LayoutGrid } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Menu, User as UserIcon, LogOut, LayoutGrid, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { fetchUserRole, type UserRole } from "@/lib/role";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import {
@@ -24,7 +25,24 @@ export default function Header() {
   const { session, username, signOut } = useAuth();
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [role, setRole] = useState<UserRole>("user");
 
+  /* 「运营后台」入口只对管理员出现；会话变化（登录/退出）时重新判定，不依赖手动刷新 */
+  useEffect(() => {
+    if (!session) {
+      setRole("user");
+      return;
+    }
+    let active = true;
+    fetchUserRole(session.user.id, session.user.email).then((r) => {
+      if (active) setRole(r);
+    });
+    return () => {
+      active = false;
+    };
+  }, [session]);
+
+  const isAdmin = role === "admin";
   const isActive = (path: string) => location.pathname === path;
 
   return (
@@ -68,6 +86,14 @@ export default function Header() {
                     个人中心
                   </Link>
                 </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin" className="cursor-pointer">
+                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      运营后台
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer text-destructive">
                   <LogOut className="mr-2 h-4 w-4" />
                   退出登录
@@ -114,6 +140,16 @@ export default function Header() {
                     >
                       个人中心
                     </Link>
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setOpen(false)}
+                        className="flex min-h-12 items-center gap-2 rounded-md px-3 text-sm text-foreground hover:bg-muted"
+                      >
+                        <ShieldCheck className="h-4 w-4" />
+                        运营后台
+                      </Link>
+                    )}
                     <button
                       onClick={() => {
                         setOpen(false);

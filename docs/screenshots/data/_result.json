@@ -1,0 +1,113 @@
+{
+  "results": [
+    {
+      "id": "1",
+      "label": "首页统计条为 45 纹样 / 10 守艺人 / 7 体验项目",
+      "pass": true,
+      "detail": "实际 45 / 10 / 7"
+    },
+    {
+      "id": "2a",
+      "label": "图库筛选：蜡染 / 扎染 / 苗绣 各 15 条",
+      "pass": true,
+      "detail": "{\"全部\":45,\"蜡染\":15,\"扎染\":15,\"苗绣\":15}"
+    },
+    {
+      "id": "2b",
+      "label": "「全部」下图库渲染 45 条",
+      "pass": true,
+      "detail": "实际 45"
+    },
+    {
+      "id": "2c",
+      "label": "关键词搜索「蝴蝶」有结果且不全量",
+      "pass": true,
+      "detail": "命中 4 条"
+    },
+    {
+      "id": "3",
+      "label": "抽查 5 条纹样详情：工序/故事/场景/相关全部达标",
+      "pass": true,
+      "detail": "马樱花纹背扇 / 苍山雪月扎染 / 井字纹蜡染 / 蝴蝶妈妈衣襟绣 / 蝴蝶纹蜡染"
+    },
+    {
+      "id": "4",
+      "label": "守艺人展厅 10 位且全部带「示例档案」标注",
+      "pass": true,
+      "detail": "卡片 10 / 标注 10"
+    },
+    {
+      "id": "5a",
+      "label": "商城渲染 10 件商品",
+      "pass": true,
+      "detail": "实际 10"
+    },
+    {
+      "id": "5b",
+      "label": "商城 10 件商品的守艺人全部可跳转（无「暂无关联」）",
+      "pass": true,
+      "detail": "可点 10 / 10"
+    },
+    {
+      "id": "5c",
+      "label": "商品详情页守艺人可跳转到对应档案",
+      "pass": true,
+      "detail": "/wencang-app/artisans/a0000004-0000-4000-8000-000000000004 · 锦鸡纹刺绣袖片一对"
+    },
+    {
+      "id": "6a",
+      "label": "旧版本号存量数据刷新后自动升级到新种子",
+      "pass": true,
+      "detail": "{\"p\":45,\"a\":10,\"pr\":10,\"e\":7,\"v\":\"3\"}"
+    },
+    {
+      "id": "6b",
+      "label": "升级只重建内容表，用户档案与预约保留",
+      "pass": true,
+      "detail": "{\"patterns\":45,\"artisans\":10,\"products\":10,\"projects\":7,\"bookings\":[\"keep-1\"],\"profiles\":[\"old@miaoda.com\"],\"seed\":\"3\"}"
+    },
+    {
+      "id": "6c",
+      "label": "引用已不存在项目的老预约仍能正常显示",
+      "pass": true,
+      "detail": "按冗余名称展示"
+    },
+    {
+      "id": "7a",
+      "label": "重置前已存在脏数据",
+      "pass": true,
+      "detail": "脏数据 1 条"
+    },
+    {
+      "id": "7b",
+      "label": "点击「重置演示数据」后内容回到 45 条、脏数据清空",
+      "pass": true,
+      "detail": "{\"patterns\":45,\"dirty\":0,\"bookings\":1,\"profiles\":1,\"keepBooking\":true,\"keepProfile\":true,\"toast\":true}"
+    },
+    {
+      "id": "7c",
+      "label": "重置成功有 toast 提示",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "7d",
+      "label": "重置只动内容表：用户账号与预约保留",
+      "pass": true,
+      "detail": "预约 1 条 / 账号 1 个"
+    },
+    {
+      "id": "9",
+      "label": "localStorage 体积远低于 2MB 上限",
+      "pass": true,
+      "detail": "UTF-16 60054 字符 ≈ 176 KB"
+    },
+    {
+      "id": "10",
+      "label": "控制台无异常报错",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "consoleErrors": []
+}

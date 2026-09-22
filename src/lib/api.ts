@@ -12,6 +12,15 @@ import type {
   ContentStatus,
 } from "@/types/types";
 import { backfillArtisanLinks, keepLiveArtisanLinks } from "@/lib/productLink";
+import {
+  artisanArtwork,
+  isGeneratedArtwork,
+  patternArtwork,
+  productArtwork,
+  projectArtwork,
+  resolveArtwork,
+  resolveArtworks,
+} from "@/lib/artwork";
 
 const safeArray = <T>(data: T[] | null): T[] => (Array.isArray(data) ? data : []);
 
@@ -49,13 +58,13 @@ export async function fetchPatterns(params?: {
   }
   const { data, error } = await query;
   if (error) throw error;
-  return safeArray<Pattern>(data);
+  return resolveArtworks(safeArray<Pattern>(data), patternArtwork);
 }
 
 export async function fetchPatternById(id: string): Promise<Pattern | null> {
   const { data, error } = await supabase.from("patterns").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
-  return data;
+  return data ? resolveArtwork(data, patternArtwork) : null;
 }
 
 export async function fetchFeaturedPatterns(limit = 5): Promise<Pattern[]> {
@@ -66,7 +75,7 @@ export async function fetchFeaturedPatterns(limit = 5): Promise<Pattern[]> {
     .order("created_at", { ascending: false })
     .limit(limit);
   if (error) throw error;
-  return safeArray<Pattern>(data);
+  return resolveArtworks(safeArray<Pattern>(data), patternArtwork);
 }
 
 // ============ 守艺人 ============
@@ -78,20 +87,20 @@ export async function fetchArtisans(): Promise<Artisan[]> {
     .order("created_at", { ascending: true })
     .limit(100);
   if (error) throw error;
-  return safeArray<Artisan>(data);
+  return resolveArtworks(safeArray<Artisan>(data), artisanArtwork);
 }
 
 export async function fetchArtisanById(id: string): Promise<Artisan | null> {
   const { data, error } = await supabase.from("artisans").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
-  return data;
+  return data ? resolveArtwork(data, artisanArtwork) : null;
 }
 
 // ============ 体验项目 ============
 export async function fetchExperienceProjects(): Promise<ExperienceProject[]> {
   const { data, error } = await supabase.from("experience_projects").select("*").order("created_at", { ascending: true }).limit(100);
   if (error) throw error;
-  return safeArray<ExperienceProject>(data);
+  return resolveArtworks(safeArray<ExperienceProject>(data), projectArtwork);
 }
 
 // ============ 预约 ============
@@ -129,7 +138,7 @@ export async function fetchProducts(): Promise<Product[]> {
     .order("created_at", { ascending: false })
     .limit(100);
   if (error) throw error;
-  return withLiveArtisanLinks(safeArray<Product>(data));
+  return resolveArtworks(await withLiveArtisanLinks(safeArray<Product>(data)), productArtwork);
 }
 
 export async function fetchProductById(id: string): Promise<Product | null> {
@@ -137,7 +146,7 @@ export async function fetchProductById(id: string): Promise<Product | null> {
   if (error) throw error;
   if (!data) return null;
   const [product] = await withLiveArtisanLinks([data]);
-  return product ?? null;
+  return product ? resolveArtwork(product, productArtwork) : null;
 }
 
 /**
@@ -239,6 +248,19 @@ export type PatternInput = Omit<Pattern, "id" | "created_at" | "status">;
 export type ArtisanInput = Omit<Artisan, "id" | "created_at" | "status">;
 export type ProductInput = Omit<Product, "id" | "created_at" | "status">;
 
+
+/**
+ * 程序化配图只在读取层生成；保存时剔除，
+ * 否则管理员每编辑一条就要把十几 KB 的 data URL 写进 localStorage。
+ * 缺 image_url 的行在下次读取时会重新生成，因此不会丢图。
+ */
+function stripGeneratedArtwork<T extends { image_url?: string }>(row: T): T {
+  if (!isGeneratedArtwork(row.image_url)) return row;
+  const next = { ...row };
+  delete next.image_url;
+  return next;
+}
+
 /* ---------- 纹样 ---------- */
 
 /** 管理后台列表：包含已归档记录（不加 status 过滤） */
@@ -249,13 +271,13 @@ export async function fetchAllPatternsAdmin(): Promise<Pattern[]> {
     .order("created_at", { ascending: false })
     .limit(500);
   throwIfError(error);
-  return safeArray<Pattern>(data);
+  return resolveArtworks(safeArray<Pattern>(data), patternArtwork);
 }
 
 export async function createPattern(input: PatternInput): Promise<Pattern> {
   const { data, error } = await supabase
     .from("patterns")
-    .insert({ ...input, status: "published" satisfies ContentStatus })
+    .insert({ ...stripGeneratedArtwork(input), status: "published" satisfies ContentStatus })
     .select()
     .single();
   throwIfError(error);
@@ -263,7 +285,7 @@ export async function createPattern(input: PatternInput): Promise<Pattern> {
 }
 
 export async function updatePattern(id: string, patch: Partial<PatternInput>): Promise<void> {
-  const { error } = await supabase.from("patterns").update(patch).eq("id", id);
+  const { error } = await supabase.from("patterns").update(stripGeneratedArtwork(patch)).eq("id", id);
   throwIfError(error);
 }
 
@@ -287,13 +309,13 @@ export async function fetchAllArtisansAdmin(): Promise<Artisan[]> {
     .order("created_at", { ascending: true })
     .limit(500);
   throwIfError(error);
-  return safeArray<Artisan>(data);
+  return resolveArtworks(safeArray<Artisan>(data), artisanArtwork);
 }
 
 export async function createArtisan(input: ArtisanInput): Promise<Artisan> {
   const { data, error } = await supabase
     .from("artisans")
-    .insert({ ...input, status: "published" satisfies ContentStatus })
+    .insert({ ...stripGeneratedArtwork(input), status: "published" satisfies ContentStatus })
     .select()
     .single();
   throwIfError(error);
@@ -301,7 +323,7 @@ export async function createArtisan(input: ArtisanInput): Promise<Artisan> {
 }
 
 export async function updateArtisan(id: string, patch: Partial<ArtisanInput>): Promise<void> {
-  const { error } = await supabase.from("artisans").update(patch).eq("id", id);
+  const { error } = await supabase.from("artisans").update(stripGeneratedArtwork(patch)).eq("id", id);
   throwIfError(error);
 }
 
@@ -340,7 +362,7 @@ export async function fetchAllProductsAdmin(): Promise<Product[]> {
 export async function createProduct(input: ProductInput): Promise<Product> {
   const { data, error } = await supabase
     .from("products")
-    .insert({ ...input, status: "published" satisfies ContentStatus })
+    .insert({ ...stripGeneratedArtwork(input), status: "published" satisfies ContentStatus })
     .select()
     .single();
   throwIfError(error);
@@ -348,7 +370,7 @@ export async function createProduct(input: ProductInput): Promise<Product> {
 }
 
 export async function updateProduct(id: string, patch: Partial<ProductInput>): Promise<void> {
-  const { error } = await supabase.from("products").update(patch).eq("id", id);
+  const { error } = await supabase.from("products").update(stripGeneratedArtwork(patch)).eq("id", id);
   throwIfError(error);
 }
 
@@ -377,6 +399,23 @@ export async function uploadContentImage(file: Blob, folder = "admin"): Promise<
   if (!data) throw new Error("图片上传失败");
   const { data: urlData } = supabase.storage.from("ai-patterns").getPublicUrl(data.path);
   return urlData.publicUrl;
+}
+
+/* ---------- 演示数据重置（管理后台） ---------- */
+
+/**
+ * 按当前种子版本重新播种内容数据（纹样 / 守艺人 / 商品 / 体验项目）。
+ * 只动内容表：用户账号、预约、订单原样保留。
+ * 权限仍由数据层判定（未登录 401 / 非管理员 403），与其它写接口一致。
+ */
+export async function resetDemoContent(): Promise<void> {
+  const client = supabase as unknown as {
+    resetDemoContent?: () => { error: { message?: string; code?: string } | null };
+  };
+  if (typeof client.resetDemoContent !== "function") {
+    throw new Error("当前为云端模式，请在各管理页逐条维护数据");
+  }
+  throwIfError(client.resetDemoContent().error ?? null);
 }
 
 /* ---------- 运营看板 ---------- */

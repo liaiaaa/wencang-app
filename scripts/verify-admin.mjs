@@ -303,14 +303,14 @@ async function main() {
   const galleryText = await cdp.eval("window.__a.text()");
   record("2c", "前台图库立即可见", galleryText.includes("自动化验收纹样·铜鼓云雷"));
 
-  // 首页统计条 +1（原先 15 条纹样）
+  // 首页统计条 +1（原先为种子纹样总数，新建后应等于「总数 + 1」）
   await cdp.goto(`${BASE}/`, 2600);
   await cdp.eval(HELPERS);
   const homeText = await cdp.eval("window.__a.text()");
-  const statMatch = homeText.match(/(\d+)\s*收录纹样/) || homeText.match(/收录纹样/);
-  const homeHas16 = /\b16\b/.test(homeText);
-  record("2d", "首页统计条 +1（15→16）", homeHas16, statMatch ? "" : "");
-  await cdp.shot("05-首页统计条-16条纹样", true);
+  const expectedHome = afterStats; // 后台列表计数已含新建的一条
+  const homeHasExpected = new RegExp(`\\b${expectedHome}\\b`).test(homeText);
+  record("2d", `首页统计条与后台同源（显示 ${expectedHome}）`, homeHasExpected);
+  await cdp.shot(`05-首页统计条-${expectedHome}条纹样`, true);
 
   /* ---- 3. 编辑寓意 + 归档 ---- */
   await cdp.goto(`${BASE}/admin?tab=patterns`, 2600);

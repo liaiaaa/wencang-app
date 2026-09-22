@@ -41,7 +41,7 @@ describe("路由冒烟（演示模式）", () => {
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain("让每一道纹样");
     // 统计条最终显示 15 条纹样 / 3 位守艺人 / 3 个体验项目
     await waitFor(() => {
-      expect(screen.getByText("15")).toBeDefined();
+      expect(screen.getByText("45")).toBeDefined();
     });
   });
 
@@ -72,15 +72,15 @@ describe("路由冒烟（演示模式）", () => {
   it("守艺人展厅 /artisans 渲染并带「示例档案」标注", async () => {
     renderAt("/artisans");
     await waitFor(() => {
-      expect(screen.getByText("杨阿妮")).toBeDefined();
+      expect(screen.getByText("潘阿秀")).toBeDefined();
     });
-    expect(screen.getAllByText("示例档案").length).toBe(3);
+    expect(screen.getAllByText("示例档案").length).toBe(10);
   });
 
   it("守艺人详情 /artisans/:id 渲染并带合规说明", async () => {
     renderAt("/artisans/a0000001-0000-4000-8000-000000000001");
     await waitFor(() => {
-      expect(screen.getByText("杨阿妮")).toBeDefined();
+      expect(screen.getByText("潘阿秀")).toBeDefined();
     });
     expect(screen.getByText("示例档案")).toBeDefined();
     expect(screen.getByText("本档案为平台示例数据，图片为示意用途")).toBeDefined();

@@ -232,10 +232,10 @@ window.__p = {
       id, name, price: 388, craft_description: 'P1 验收用商品',
       image_url: 'data:image/png;base64,AAAA', created_at: new Date().toISOString(),
     }, extra);
-    db.products.push(mk('g-p1-legacy', 'P1验收-老数据', { artisan_name: '韦祖英' }));
+    db.products.push(mk('g-p1-legacy', 'P1验收-老数据', { artisan_name: '韦小凤' }));
     db.products.push(mk('g-p1-unknown', 'P1验收-查无此人', { artisan_name: '查无此人的守艺人' }));
     db.products.push(mk('g-p1-ghost', 'P1验收-失效关联', {
-      artisan_id: 'a0000009-0000-4000-8000-000000000009', artisan_name: '已消失的守艺人',
+      artisan_id: 'a0000099-0000-4000-8000-000000000099', artisan_name: '已消失的守艺人',
     }));
     localStorage.setItem('wenzang.mock.db.v1', JSON.stringify(db));
     return true;
@@ -320,10 +320,10 @@ async function main() {
   await cdp.shot("01-后台-关联守艺人下拉");
 
   /* ---- 2. 选定后创建：两列一致落库 ---- */
-  const yang = allArtisans.find((a) => a.name === "杨阿妮");
-  await cdp.eval(`window.__p.pickOption('杨阿妮')`);
+  const yang = allArtisans.find((a) => a.name === "潘阿秀");
+  await cdp.eval(`window.__p.pickOption('潘阿秀')`);
   await sleep(300);
-  record("2a", "选择后触发器回显守艺人姓名", (await cdp.eval(`window.__p.comboboxLabel()`)) === "杨阿妮");
+  record("2a", "选择后触发器回显守艺人姓名", (await cdp.eval(`window.__p.comboboxLabel()`)) === "潘阿秀");
 
   await cdp.eval(`window.__p.fillIn('P1验收-下拉商品', 0)`);
   await cdp.eval(`window.__p.fillIn('458', 1)`);
@@ -334,7 +334,7 @@ async function main() {
   record(
     "2b",
     "创建后 artisan_id 与 artisan_name 一致写入",
-    !!created && created.artisan_id === yang?.id && created.artisan_name === "杨阿妮",
+    !!created && created.artisan_id === yang?.id && created.artisan_name === "潘阿秀",
     created ? `id=${created.artisan_id} name=${created.artisan_name}` : "未找到记录",
   );
   await cdp.shot("02-后台-商品管理列表", true);
@@ -342,7 +342,7 @@ async function main() {
   /* ---- 3. 前台商城：可点击跳转 ---- */
   await cdp.goto(`${BASE}/shop`, 2800);
   await cdp.eval(HELPERS);
-  const line = await cdp.eval(`window.__p.shopLine('杨阿妮')`);
+  const line = await cdp.eval(`window.__p.shopLine('潘阿秀')`);
   record(
     "3a",
     "商城卡片守艺人为可点击节点，且未嵌套 <a>",
@@ -350,11 +350,11 @@ async function main() {
     line ? `${line.count} 处 / 子节点=${line.tag}` : "未找到",
   );
 
-  await cdp.eval(`window.__p.clickShopArtisan('杨阿妮')`);
+  await cdp.eval(`window.__p.clickShopArtisan('潘阿秀')`);
   await sleep(1800);
   const url = await cdp.eval(`window.__p.url()`);
   record("3b", "点击后跳转到对应守艺人详情页", url === `/artisans/${yang?.id}`, `当前 ${url}`);
-  record("3c", "落地页为该守艺人档案", (await cdp.eval(`window.__p.text()`)).includes("杨阿妮"));
+  record("3c", "落地页为该守艺人档案", (await cdp.eval(`window.__p.text()`)).includes("潘阿秀"));
   await cdp.shot("03-前台-守艺人档案页", true);
 
   /* ---- 4. 商品详情页链接 ---- */
@@ -364,7 +364,7 @@ async function main() {
   record(
     "4",
     "详情页「出自 · 姓名」为 /artisans/:id 链接",
-    dlink?.href === `/artisans/${yang?.id}` && String(dlink?.text).includes("杨阿妮"),
+    dlink?.href === `/artisans/${yang?.id}` && String(dlink?.text).includes("潘阿秀"),
     dlink ? `${dlink.href} · ${dlink.text}` : "无链接",
   );
   await cdp.shot("04-前台-商品详情带守艺人链接");
@@ -372,7 +372,7 @@ async function main() {
   /* ---- 5. 归档守艺人不出现在选项中 ---- */
   await cdp.goto(`${BASE}/admin?tab=artisans`, 2800);
   await cdp.eval(HELPERS);
-  await cdp.eval(`window.__p.rowBtn('段树坤', '归档')`);
+  await cdp.eval(`window.__p.rowBtn('莫朝秀', '归档')`);
   await sleep(2200);
   await cdp.eval(`window.__p.nav('商品管理')`);
   await sleep(1500);
@@ -383,15 +383,15 @@ async function main() {
     "5",
     "归档守艺人不进下拉选项",
     Array.isArray(optsAfterArchive) &&
-      !optsAfterArchive.includes("段树坤") &&
-      optsAfterArchive.includes("杨阿妮"),
+      !optsAfterArchive.includes("莫朝秀") &&
+      optsAfterArchive.includes("潘阿秀"),
     `选项 ${JSON.stringify(optsAfterArchive)}`,
   );
   await cdp.eval(`window.__p.btn('取消')`);
   await sleep(800);
   await cdp.eval(`window.__p.nav('守艺人管理')`);
   await sleep(1500);
-  await cdp.eval(`window.__p.rowBtn('段树坤', '恢复')`);
+  await cdp.eval(`window.__p.rowBtn('莫朝秀', '恢复')`);
   await sleep(2200);
 
   /* ---- 6. 老数据与无效 id ---- */
@@ -401,7 +401,7 @@ async function main() {
 
   await cdp.goto(`${BASE}/shop`, 2800);
   await cdp.eval(HELPERS);
-  const weeying = await cdp.eval(`window.__p.shopLine('韦祖英')`);
+  const waxLine = await cdp.eval(`window.__p.shopLine('韦小凤')`);
   const unknown = await cdp.eval(`window.__p.shopLine('查无此人的守艺人')`);
   const ghost = await cdp.eval(`window.__p.shopLine('已消失的守艺人')`);
   const shopText = await cdp.eval(`window.__p.text()`);
@@ -409,8 +409,8 @@ async function main() {
   record(
     "6a",
     "可反查的老数据：按 artisan_name 补齐 id 后可跳转",
-    !!weeying && weeying.clickables.every(Boolean) && weeying.count >= 2,
-    weeying ? `${weeying.count} 处全部可点` : "未找到",
+    !!waxLine && waxLine.clickables.every(Boolean) && waxLine.count >= 2,
+    waxLine ? `${waxLine.count} 处全部可点` : "未找到",
   );
   record(
     "6b",
@@ -449,7 +449,7 @@ async function main() {
   record(
     "6f",
     "数据层保留无效 id 与名字，管理员可修正",
-    ghostRow?.artisan_id === "a0000009-0000-4000-8000-000000000009" &&
+    ghostRow?.artisan_id === "a0000099-0000-4000-8000-000000000099" &&
       ghostRow?.artisan_name === "已消失的守艺人",
     ghostRow ? `id=${ghostRow.artisan_id}` : "未找到",
   );
@@ -459,12 +459,12 @@ async function main() {
   record(
     "6g",
     "老数据在后台下拉中已回显守艺人",
-    (await cdp.eval(`window.__p.comboboxLabel()`)) === "韦祖英",
+    (await cdp.eval(`window.__p.comboboxLabel()`)) === "韦小凤",
   );
   await cdp.shot("07-后台-老数据下拉回显");
 
   await cdp.eval(`window.__p.openOptions()`);
-  await cdp.eval(`window.__p.pickOption('杨阿妮')`);
+  await cdp.eval(`window.__p.pickOption('潘阿秀')`);
   await sleep(400);
   await cdp.eval(`window.__p.btn('保存修改')`);
   await sleep(2400);
@@ -472,7 +472,7 @@ async function main() {
   record(
     "6h",
     "后台改选守艺人后 id 与 name 一并更新",
-    legacySaved?.artisan_id === yang?.id && legacySaved?.artisan_name === "杨阿妮",
+    legacySaved?.artisan_id === yang?.id && legacySaved?.artisan_name === "潘阿秀",
     legacySaved ? `id=${legacySaved.artisan_id} name=${legacySaved.artisan_name}` : "未找到",
   );
 
@@ -480,7 +480,7 @@ async function main() {
   await cdp.goto(`${BASE}/admin?tab=products`, 2800);
   await cdp.eval(HELPERS);
   const persisted = await cdp.eval(`window.__p.findProduct('P1验收-下拉商品')`);
-  record("7a", "刷新后新建商品的关联仍在", persisted?.artisan_name === "杨阿妮" && !!persisted?.artisan_id);
+  record("7a", "刷新后新建商品的关联仍在", persisted?.artisan_name === "潘阿秀" && !!persisted?.artisan_id);
 
   const consoleClean = cdp.consoleErrors.filter(
     (e) => !/favicon|404|Failed to load resource|Download the React DevTools/i.test(e),

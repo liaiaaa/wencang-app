@@ -1,0 +1,113 @@
+{
+  "results": [
+    {
+      "id": "1a",
+      "label": "未登录：Header 显示「登录 / 注册」，无用户菜单",
+      "pass": true,
+      "detail": "链接「登录 / 注册」/ 触发器「null」"
+    },
+    {
+      "id": "1b",
+      "label": "未登录：首页 CTA 为注册引导，主按钮指向登录页",
+      "pass": true,
+      "detail": "href=/wencang-app/login"
+    },
+    {
+      "id": "2a",
+      "label": "注册成功后自动登录并离开登录页",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "2b",
+      "label": "注册后点首页（SPA 内跳转，未刷新）",
+      "pass": true,
+      "detail": "当前 /wencang-app/"
+    },
+    {
+      "id": "2c",
+      "label": "已登录：Header 不再显示「登录 / 注册」，改为用户名触发器",
+      "pass": true,
+      "detail": "登录链接=null / 触发器「ui_probe」"
+    },
+    {
+      "id": "2d",
+      "label": "已登录：CTA 变「进入我的纹藏」并指向 /profile",
+      "pass": true,
+      "detail": "href=/wencang-app/profile · 欢迎回来继续你的非遗探索之旅ui_probe，你保存的 AI 纹样、提交的预约与"
+    },
+    {
+      "id": "2e",
+      "label": "已登录：副按钮「体验AI工坊」保留",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "3a",
+      "label": "普通用户下拉含个人中心 / 退出登录",
+      "pass": true,
+      "detail": "[\"个人中心\",\"退出登录\"]"
+    },
+    {
+      "id": "3b",
+      "label": "普通用户下拉不含「运营后台」",
+      "pass": true,
+      "detail": "[\"个人中心\",\"退出登录\"]"
+    },
+    {
+      "id": "4",
+      "label": "退出后 Header 与 CTA 立即回到未登录态（未刷新页面）",
+      "pass": true,
+      "detail": "Header「登录 / 注册」/ 触发器「null」"
+    },
+    {
+      "id": "5a",
+      "label": "admin 下拉含「运营后台」入口",
+      "pass": true,
+      "detail": "[\"个人中心\",\"运营后台\",\"退出登录\"]"
+    },
+    {
+      "id": "5b",
+      "label": "运营后台入口指向 /admin",
+      "pass": true,
+      "detail": "/wencang-app/admin"
+    },
+    {
+      "id": "6a",
+      "label": "已登录直接访问 /profile 不被踢出",
+      "pass": true,
+      "detail": "/wencang-app/profile"
+    },
+    {
+      "id": "6b",
+      "label": "未登录访问 /profile 仍重定向到登录页",
+      "pass": true,
+      "detail": "当前 /wencang-app/login"
+    },
+    {
+      "id": "7a",
+      "label": "未登录进商品详情：显示「登录后下单」引导",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "7b",
+      "label": "已登录进商品详情：不再出现登录引导，按钮为「立即下单」",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "7c",
+      "label": "已登录进预约页：按钮为「提交预约」而非「登录后提交」",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "8",
+      "label": "控制台无异常报错",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "consoleErrors": []
+}

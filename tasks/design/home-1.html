@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- miaoda-super-design | title: 靛蓝卷轴式 | skeleton: 编辑式纵向卷轴 | sig: 朱砂印章式标签+竖排标题+硬边靛蓝阴影卡片 -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>纹藏 · 非遗染织刺绣数字平台</title>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        container: { center: true, padding: '2rem', screens: { '2xl': '1400px' } },
+        extend: {
+          colors: {
+            border: 'hsl(var(--border))',
+            input: 'hsl(var(--input))',
+            ring: 'hsl(var(--ring))',
+            background: 'hsl(var(--background))',
+            foreground: 'hsl(var(--foreground))',
+            primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+            secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
+            destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+            muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+            accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+            popover: { DEFAULT: 'hsl(var(--popover))', foreground: 'hsl(var(--popover-foreground))' },
+            card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' }
+          },
+          borderRadius: {
+            lg: 'var(--radius)',
+            md: 'calc(var(--radius) - 2px)',
+            sm: 'calc(var(--radius) - 4px)'
+          },
+          keyframes: {
+            /* ===== KEYFRAMES:BEGIN ===== */
+            'fade-up': { '0%': { opacity: '0', transform: 'translateY(24px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            'fade-in': { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            'reveal-clip': { '0%': { clipPath: 'inset(0 100% 0 0)' }, '100%': { clipPath: 'inset(0 0% 0 0)' } },
+            'marquee': { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' } }
+            /* ===== KEYFRAMES:END ===== */
+          },
+          animation: {
+            /* ===== ANIMATIONS:BEGIN ===== */
+            'fade-up': 'fade-up 0.7s cubic-bezier(0.22,1,0.36,1) forwards',
+            'fade-in': 'fade-in 0.8s ease forwards',
+            'reveal-clip': 'reveal-clip 0.9s cubic-bezier(0.22,1,0.36,1) forwards',
+            'marquee': 'marquee 32s linear infinite'
+            /* ===== ANIMATIONS:END ===== */
+          }
+        }
+      },
+      plugins: [
+        function ({ addVariant }) {
+          addVariant('intersect', '&:not([no-intersect])');
+        }
+      ]
+    };
+  </script>
+  <style>
+    /* ===== FONT-FACE:BEGIN ===== */
+    @font-face { font-family: 'SourceHanSerifCN'; src: url('https://resource-static.bj.bcebos.com/fonts-skill/SourceHanSerifCN-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'HarmonyOSSans'; src: url('https://resource-static.bj.bcebos.com/fonts-skill/HarmonyOSSans_Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+    /* ===== FONT-FACE:END ===== */
+
+    /* ===== DESIGN-TOKENS:BEGIN ===== */
+    :root {
+      --radius: 0.25rem;
+      --background: 40 33% 95%;
+      --foreground: 218 45% 18%;
+      --card: 42 40% 97%;
+      --card-foreground: 218 45% 18%;
+      --primary: 218 51% 37%;
+      --primary-foreground: 40 33% 95%;
+      --secondary: 218 30% 88%;
+      --secondary-foreground: 218 51% 28%;
+      --muted: 40 20% 90%;
+      --muted-foreground: 218 15% 42%;
+      --accent: 8 72% 45%;
+      --accent-foreground: 40 33% 96%;
+      --destructive: 0 72% 48%;
+      --destructive-foreground: 40 33% 96%;
+      --border: 218 25% 82%;
+      --input: 218 25% 82%;
+      --ring: 218 51% 37%;
+      --popover: 42 40% 97%;
+      --popover-foreground: 218 45% 18%;
+    }
+    /* ===== DESIGN-TOKENS:END ===== */
+
+    /* ===== CUSTOM-TOKENS:BEGIN ===== */
+    :root {
+      --cinnabar: 8 72% 45%;
+      --ink: 218 45% 18%;
+      --paper: 40 33% 95%;
+    }
+    /* ===== CUSTOM-TOKENS:END ===== */
+
+    /* ===== SIGNATURE-CSS:BEGIN ===== */
+    .writing-vertical {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      letter-spacing: 0.35em;
+    }
+    .seal-stamp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      background: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+      font-family: 'SourceHanSerifCN', serif;
+      font-weight: 700;
+      border-radius: 0.25rem;
+    }
+    .ink-border {
+      border: 2px solid hsl(var(--primary));
+    }
+    .ink-shadow {
+      box-shadow: 4px 4px 0 0 hsl(var(--primary));
+    }
+    .paper-grain {
+      background-image: radial-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+      background-size: 14px 14px;
+    }
+    /* ===== SIGNATURE-CSS:END ===== */
+  </style>
+</head>
+<body class="bg-background text-foreground antialiased font-['HarmonyOSSans',sans-serif]">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-background/95 backdrop-blur border-b-2 border-primary">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2">
+        <span class="seal-stamp text-sm">纹</span>
+        <span class="font-['SourceHanSerifCN',serif] text-xl font-bold tracking-widest text-primary">纹藏</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm">
+        <a href="#gallery" class="text-foreground hover:text-primary transition-colors">纹样图库</a>
+        <a href="#workshop" class="text-foreground hover:text-primary transition-colors">AI纹样工坊</a>
+        <a href="#artisans" class="text-foreground hover:text-primary transition-colors">守艺人</a>
+        <a href="#booking" class="text-foreground hover:text-primary transition-colors">体验预约</a>
+        <a href="#shop" class="text-foreground hover:text-primary transition-colors">文创商城</a>
+      </nav>
+      <button class="ink-border ink-shadow bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">登录 / 注册</button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section id="hero" class="relative overflow-hidden paper-grain">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24 grid md:grid-cols-12 gap-8 items-center">
+      <div class="md:col-span-7 space-y-6">
+        <div class="flex items-center gap-3 opacity-0 intersect:animate-fade-in intersect-once">
+          <span class="h-px w-12 bg-accent"></span>
+          <span class="text-xs tracking-[0.3em] text-accent uppercase">Intangible Heritage Archive</span>
+        </div>
+        <h1 class="font-['SourceHanSerifCN',serif] text-5xl md:text-7xl font-bold leading-[1.1] text-primary">
+          <span class="block opacity-0 intersect:animate-fade-up intersect-once">让每一道</span>
+          <span class="block opacity-0 intersect:animate-fade-up intersect-once" style="animation-delay:0.12s">纹样，<span class="text-accent">皆有归处</span></span>
+        </h1>
+        <p class="max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed opacity-0 intersect:animate-fade-up intersect-once" style="animation-delay:0.24s">
+          纹藏聚焦蜡染、扎染、苗绣等染织刺绣类非物质文化遗产，以数字化档案记录经典纹样，以AI续写新生纹样，连接守艺人，预约线下体验。
+        </p>
+        <div class="flex flex-wrap gap-4 opacity-0 intersect:animate-fade-up intersect-once" style="animation-delay:0.36s">
+          <button class="ink-border ink-shadow bg-primary text-primary-foreground px-6 py-3 text-sm font-medium hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">探索纹样图库</button>
+          <button class="ink-border bg-background text-primary px-6 py-3 text-sm font-medium hover:bg-secondary transition-colors">进入AI工坊</button>
+        </div>
+      </div>
+      <div class="md:col-span-5 relative">
+        <div class="relative ink-border ink-shadow bg-card overflow-hidden [clip-path:inset(0_100%_0_0)] intersect:animate-reveal-clip intersect-once" style="animation-delay:0.2s">
+          <img src="https://miaoda-site-img.cdn.bcebos.com/images/baidu_image_search_cef52ebf-6761-473b-b9b5-907307225409.jpg" alt="苗族蜡染靛蓝纹样织物" class="w-full h-72 md:h-96 object-cover" />
+          <div class="absolute top-3 right-3 seal-stamp text-xs">藏</div>
+        </div>
+        <div class="absolute -bottom-4 -left-4 writing-vertical font-['SourceHanSerifCN',serif] text-sm text-primary/60 hidden md:block">蜡染 · 靛蓝 · 千年</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <section class="border-y-2 border-primary bg-primary text-primary-foreground overflow-hidden">
+    <div class="flex animate-marquee whitespace-nowrap py-3">
+      <div class="flex items-center gap-8 px-4 text-sm tracking-widest font-['SourceHanSerifCN',serif]">
+        <span>蜡染</span><span class="text-accent">·</span><span>扎染</span><span class="text-accent">·</span><span>苗绣</span><span class="text-accent">·</span><span>数字档案</span><span class="text-accent">·</span><span>AI续写</span><span class="text-accent">·</span><span>守艺人</span><span class="text-accent">·</span><span>体验预约</span><span class="text-accent">·</span>
+      </div>
+      <div class="flex items-center gap-8 px-4 text-sm tracking-widest font-['SourceHanSerifCN',serif]" aria-hidden="true">
+        <span>蜡染</span><span class="text-accent">·</span><span>扎染</span><span class="text-accent">·</span><span>苗绣</span><span class="text-accent">·</span><span>数字档案</span><span class="text-accent">·</span><span>AI续写</span><span class="text-accent">·</span><span>守艺人</span><span class="text-accent">·</span><span>体验预约</span><span class="text-accent">·</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature entries -->
+  <section id="features" class="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-20">
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="h-px w-8 bg-accent"></span>
+          <span class="text-xs tracking-[0.25em] text-accent">PLATFORM</span>
+        </div>
+        <h2 class="font-['SourceHanSerifCN',serif] text-3xl md:text-4xl font-bold text-primary">平台功能入口</h2>
+      </div>
+      <span class="hidden md:block writing-vertical font-['SourceHanSerifCN',serif] text-xs text-muted-foreground">纹藏 · 五大功能</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <a href="#gallery" class="group ink-border ink-shadow bg-card p-6 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <span class="seal-stamp text-base">图</span>
+          <span class="text-xs text-muted-foreground tabular-nums">N°01</span>
+        </div>
+        <h3 class="font-['SourceHanSerifCN',serif] text-xl font-bold text-primary mb-2">纹样图库</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">数字化档案收录蜡染、扎染、苗绣经典纹样，支持按类别筛选与关键词检索。</p>
+      </a>
+      <a href="#workshop" class="group ink-border ink-shadow bg-card p-6 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <span class="seal-stamp text-base">创</span>
+          <span class="text-xs text-muted-foreground tabular-nums">N°02</span>
+        </div>
+        <h3 class="font-['SourceHanSerifCN',serif] text-xl font-bold text-primary mb-2">AI纹样工坊</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">输入主题词与类别，AI生成全新纹样图案，并输出纹样命名与寓意解读。</p>
+      </a>
+      <a href="#artisans" class="group ink-border ink-shadow bg-card p-6 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <span class="seal-stamp text-base">匠</span>
+          <span class="text-xs text-muted-foreground tabular-nums">N°03</span>
+        </div>
+        <h3 class="font-['SourceHanSerifCN',serif] text-xl font-bold text-primary mb-2">守艺人展厅</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">展示非遗守艺人姓名、称号、擅长工艺与代表作品，连接传承与体验。</p>
+      </a>
+      <a href="#booking" class="group ink-border ink-shadow bg-card p-6 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <span class="seal-stamp text-base">约</span>
+          <span class="text-xs text-muted-foreground tabular-nums">N°04</span>
+        </div>
+        <h3 class="font-['SourceHanSerifCN',serif] text-xl font-bold text-primary mb-2">体验预约</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">选择守艺人、体验项目、日期与时段，提交预约并查看状态流转。</p>
+      </a>
+      <a href="#shop" class="group ink-border ink-shadow bg-card p-6 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <span class="seal-stamp text-base">购</span>
+          <span class="text-xs text-muted-foreground tabular-nums">N°05</span>
+        </div>
+        <h3 class="font-['SourceHanSerifCN',serif] text-xl font-bold text-primary mb-2">文创商城</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">非遗文创作品列表与详情，了解工艺说明与守艺人，支持在线下单。</p>
+      </a>
+      <a href="#account" class="group ink-border ink-shadow bg-primary text-primary-foreground p-6 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <span class="w-10 h-10 flex items-center justify-center bg-accent text-accent-foreground rounded-sm font-['SourceHanSerifCN',serif] font-bold">我</span>
+          <span class="text-xs text-primary-foreground/60 tabular-nums">N°06</span>
+        </div>
+        <h3 class="font-['SourceHanSerifCN',serif] text-xl font-bold mb-2">个人中心</h3>
+        <p class="text-sm text-primary-foreground/80 leading-relaxed">我的纹样、我的预约、我的订单，一站式管理你的非遗足迹。</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured patterns carousel -->
+  <section id="gallery" class="bg-secondary/40 paper-grain">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-20">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="h-px w-8 bg-accent"></span>
+            <span class="text-xs tracking-[0.25em] text-accent">CURATED PATTERNS</span>
+          </div>
+          <h2 class="font-['SourceHanSerifCN',serif] text-3xl md:text-4xl font-bold text-primary">精选纹样轮播</h2>
+        </div>
+        <a href="#" class="hidden md:inline-flex items-center gap-1 text-sm text-primary hover:text-accent transition-colors">查看全部 →</a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <article class="ink-border ink-shadow bg-card overflow-hidden group">
+          <div class="overflow-hidden">
+            <img src="https://miaoda-site-img.cdn.bcebos.com/images/baidu_image_search_225586e4-9f56-4cd9-89e5-fdbbaca317ac.jpg" alt="蜡染靛蓝白纹织物" class="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-700" />
+          </div>
+          <div class="p-5">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs ink-border border-primary text-primary px-2 py-0.5">蜡染</span>
+              <span class="text-xs text-muted-foreground tabular-nums">2024.03.15</span>
+            </div>
+            <h3 class="font-['SourceHanSerifCN',serif] text-lg font-bold text-primary">蝶恋花靛蓝纹</h3>
+            <p class="text-xs text-muted-foreground mt-1">贵州 · 丹寨</p>
+          </div>
+        </article>
+        <article class="ink-border ink-shadow bg-card overflow-hidden group">
+          <div class="overflow-hidden">
+            <img src="https://miaoda-site-img.cdn.bcebos.com/images/baidu_image_search_69d24cd9-bd4d-432e-bd92-c1adc4378286.jpg" alt="苗绣彩色丝线纹样" class="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-700" />
+          </div>
+          <div class="p-5">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs ink-border border-primary text-primary px-2 py-0.5">苗绣</span>
+              <span class="text-xs text-muted-foreground tabular-nums">2024.05.02</span>
+            </div>
+            <h3 class="font-['SourceHanSerifCN',serif] text-lg font-bold text-primary">蝴蝶妈妈绣</h3>
+            <p class="text-xs text-muted-foreground mt-1">贵州 · 凯里</p>
+          </div>
+        </article>
+        <article class="ink-border ink-shadow bg-card overflow-hidden group">
+          <div class="overflow-hidden">
+            <img src="https://miaoda-site-img.cdn.bcebos.com/images/baidu_image_search_1fc81214-b2ea-4437-8b96-909fee7a813d.jpg" alt="苗族银饰工艺" class="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-700" />
+          </div>
+          <div class="p-5">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs ink-border border-primary text-primary px-2 py-0.5">扎染</span>
+              <span class="text-xs text-muted-foreground tabular-nums">2024.06.18</span>
+            </div>
+            <h3 class="font-['SourceHanSerifCN',serif] text-lg font-bold text-primary">云纹扎染布</h3>
+            <p class="text-xs text-muted-foreground mt-1">云南 · 大理</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-primary text-primary-foreground">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-12">
+      <div class="flex flex-col md:flex-row items-start justify-between gap-8">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="seal-stamp text-sm">纹</span>
+            <span class="font-['SourceHanSerifCN',serif] text-xl font-bold tracking-widest">纹藏</span>
+          </div>
+          <p class="text-sm text-primary-foreground/70 max-w-sm leading-relaxed">非遗染织刺绣数字平台，记录经典纹样，续写新生纹样，连接守艺人。</p>
+        </div>
+        <div class="text-sm text-primary-foreground/70 space-y-2">
+          <p>纹样图库 · AI纹样工坊</p>
+          <p>守艺人展厅 · 体验预约</p>
+          <p>文创商城 · 个人中心</p>
+        </div>
+      </div>
+      <div class="mt-10 pt-6 border-t border-primary-foreground/20 text-xs text-primary-foreground/50 text-center">© 2026 纹藏 · 非遗染织刺绣数字平台</div>
+    </div>
+  </footer>
+
+  <!-- P4 丢弃以下全部 data-preview-only 脚本 -->
+  <script src="https://code.bdstatic.com/npm/tailwindcss-intersect@2.2.0/dist/observer.min.js" data-preview-only></script>
+  <script type="module" data-preview-only>
+    import { animate, inView, scroll, stagger } from "https://cdn.jsdelivr.net/npm/motion@12.23.25/+esm";
+    Object.assign(window, { animate, inView, scroll, stagger });
+    document.dispatchEvent(new Event('motion:ready'));
+  </script>
+  <script data-preview-only>
+    /* motion 函数由上面的 module 异步挂到 window；解构必须在此回调内，顶层解构会拿到 undefined */
+    document.addEventListener('motion:ready', () => {
+      const { animate, inView, scroll, stagger } = window;
+      /* ===== MOTION-SCRIPT:BEGIN ===== */
+      /* ===== MOTION-SCRIPT:END ===== */
+    });
+  </script>
+</body>
+</html>

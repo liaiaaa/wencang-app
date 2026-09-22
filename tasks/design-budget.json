@@ -1,0 +1,18 @@
+{
+  "clarified": true,
+  "clarify_reason": "用户PRD已给出完整色系spec：蜡染靛蓝#2E4E8E + 米白 + 朱砂红点缀，视觉气质为民族工艺感与现代简洁结合，无需再问",
+  "snapshot": [],
+  "budget": 3,
+  "checked": [
+    "home-1.html",
+    "home-2.html",
+    "home-3.html"
+  ],
+  "round_open": false,
+  "first_round": true,
+  "sha": {
+    "home-1.html": "db71c46bbf171bd639f0049b751bf0636ec16f8cb5bacda4fa4c10007df17f2d",
+    "home-2.html": "a8aa973ccd7f9932f6718e2676144ee347e2a5d95aa3aa72041e060244204fbe",
+    "home-3.html": "a27bb6cb275ea205110a8e310b490118bb571a7b8eabf28aa2dcc17cf57c326c"
+  }
+}

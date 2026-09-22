@@ -1,0 +1,167 @@
+{
+  "results": [
+    {
+      "id": "1a",
+      "label": "纹样 A 相关纹样不含自身",
+      "pass": true,
+      "detail": "3 条"
+    },
+    {
+      "id": "1b",
+      "label": "纹样 A 相关纹样无重复",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "1c",
+      "label": "纹样 A 卡片名称不重复",
+      "pass": true,
+      "detail": "铜鼓纹蜡染 / 蝴蝶纹蜡染 / 鱼鸟纹蜡染"
+    },
+    {
+      "id": "1d",
+      "label": "A 的主标题为纹样名",
+      "pass": true,
+      "detail": "蝶恋花靛蓝纹"
+    },
+    {
+      "id": "2a",
+      "label": "点击相关纹样后 URL 与目标一致",
+      "pass": true,
+      "detail": "/patterns/p0000004-0000-4000-8000-000000000004 → p0000004-0000-4000-8000-000000000004"
+    },
+    {
+      "id": "2b",
+      "label": "B 的主内容已切换（非 A 残留）",
+      "pass": true,
+      "detail": "A=「蝶恋花靛蓝纹」 B=「铜鼓纹蜡染」"
+    },
+    {
+      "id": "2a",
+      "label": "纹样 B 相关纹样不含自身",
+      "pass": true,
+      "detail": "3 条"
+    },
+    {
+      "id": "2b",
+      "label": "纹样 B 相关纹样无重复",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "2c",
+      "label": "纹样 B 卡片名称不重复",
+      "pass": true,
+      "detail": "蝶恋花靛蓝纹 / 铜鼓云雷纹 / 蝴蝶纹蜡染"
+    },
+    {
+      "id": "3Ca",
+      "label": "跳到 C 后主内容切换",
+      "pass": true,
+      "detail": "前=「铜鼓纹蜡染」 现=「铜鼓云雷纹」"
+    },
+    {
+      "id": "3Cb",
+      "label": "C 的 URL 与点击目标一致",
+      "pass": true,
+      "detail": "/patterns/p0000010-0000-4000-8000-000000000010 → p0000010-0000-4000-8000-000000000010"
+    },
+    {
+      "id": "3Ca",
+      "label": "纹样 C 相关纹样不含自身",
+      "pass": true,
+      "detail": "3 条"
+    },
+    {
+      "id": "3Cb",
+      "label": "纹样 C 相关纹样无重复",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "3Cc",
+      "label": "纹样 C 卡片名称不重复",
+      "pass": true,
+      "detail": "铜鼓纹蜡染 / 万字纹蜡染 / 蝶恋花靛蓝纹"
+    },
+    {
+      "id": "3Da",
+      "label": "跳到 D 后主内容切换",
+      "pass": true,
+      "detail": "前=「铜鼓云雷纹」 现=「铜鼓纹蜡染」"
+    },
+    {
+      "id": "3Db",
+      "label": "D 的 URL 与点击目标一致",
+      "pass": true,
+      "detail": "/patterns/p0000004-0000-4000-8000-000000000004 → p0000004-0000-4000-8000-000000000004"
+    },
+    {
+      "id": "3Da",
+      "label": "纹样 D 相关纹样不含自身",
+      "pass": true,
+      "detail": "3 条"
+    },
+    {
+      "id": "3Db",
+      "label": "纹样 D 相关纹样无重复",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "3Dc",
+      "label": "纹样 D 卡片名称不重复",
+      "pass": true,
+      "detail": "蝶恋花靛蓝纹 / 铜鼓云雷纹 / 蝴蝶纹蜡染"
+    },
+    {
+      "id": "3e",
+      "label": "连续跳转链每页主内容都随 URL 切换（无上一篇残留）",
+      "pass": true,
+      "detail": "蝶恋花靛蓝纹 → 铜鼓纹蜡染 → 铜鼓云雷纹 → 铜鼓纹蜡染"
+    },
+    {
+      "id": "4a",
+      "label": "页面只有一个「相关纹样」区块",
+      "pass": true,
+      "detail": "实际 1 个"
+    },
+    {
+      "id": "4b",
+      "label": "推荐结果恒为在架、不含自身、不重复（数据层全量抽查）",
+      "pass": true,
+      "detail": "抽查 45 条；异常 []"
+    },
+    {
+      "id": "4c",
+      "label": "归档纹样不进入前台推荐（后台归档 → 详情页校验）",
+      "pass": true,
+      "detail": "推荐 铜鼓纹蜡染 / 蝴蝶纹蜡染 / 井字纹蜡染"
+    },
+    {
+      "id": "4a",
+      "label": "归档后的 A 相关纹样不含自身",
+      "pass": true,
+      "detail": "3 条"
+    },
+    {
+      "id": "4b",
+      "label": "归档后的 A 相关纹样无重复",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "4c",
+      "label": "归档后的 A 卡片名称不重复",
+      "pass": true,
+      "detail": "铜鼓纹蜡染 / 蝴蝶纹蜡染 / 井字纹蜡染"
+    },
+    {
+      "id": "5",
+      "label": "控制台无异常报错",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "consoleErrors": []
+}

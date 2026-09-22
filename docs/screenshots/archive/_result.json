@@ -1,0 +1,82 @@
+{
+  "results": [
+    {
+      "id": "1",
+      "label": "45 条纹样详情页区块完整",
+      "pass": true,
+      "detail": "已检查 45 条，不完整 0 条"
+    },
+    {
+      "id": "2a",
+      "label": "蝴蝶妈妈绣：苗绣工序顺序符合真实工艺",
+      "pass": true,
+      "detail": "6 步"
+    },
+    {
+      "id": "2b",
+      "label": "铜鼓纹蜡染：蜡染工序顺序符合真实工艺",
+      "pass": true,
+      "detail": "6 步"
+    },
+    {
+      "id": "2c",
+      "label": "云纹扎染布：扎染工序顺序符合真实工艺",
+      "pass": true,
+      "detail": "6 步"
+    },
+    {
+      "id": "2d",
+      "label": "文化故事无真实人名/校名",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "3a",
+      "label": "Admin 编辑文化故事成功写入",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "3b",
+      "label": "详情页实时同步新内容",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "4a",
+      "label": "缺失字段：基础内容正常渲染，且无空区块",
+      "pass": true,
+      "detail": "trulyMissing=true {\"rendered\":true,\"meaningShown\":true,\"steps\":0,\"hasSteps\":false,\"hasStory\":false,\"hasScenes\":false}"
+    },
+    {
+      "id": "4b",
+      "label": "缺失字段：无控制台报错",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "5a",
+      "label": "相关纹样点击跳转正确",
+      "pass": true,
+      "detail": "/patterns/p0000002-0000-4000-8000-000000000002 → /patterns/p0000002-0000-4000-8000-000000000002"
+    },
+    {
+      "id": "6a",
+      "label": "375px 无横向溢出",
+      "pass": true,
+      "detail": "docW=375 winW=375"
+    },
+    {
+      "id": "6b",
+      "label": "375px 下工艺流程纵向排列",
+      "pass": true,
+      "detail": "ol flex-direction=column, 6 步"
+    },
+    {
+      "id": "7",
+      "label": "详情页数据来自本地（断网可渲染）",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}

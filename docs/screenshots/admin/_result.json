@@ -1,0 +1,131 @@
+{
+  "results": [
+    {
+      "id": "1a",
+      "label": "个人中心出现管理入口",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "1b",
+      "label": "五个管理区块均可达",
+      "pass": true,
+      "detail": "找到 5/5"
+    },
+    {
+      "id": "1c",
+      "label": "侧边导航可切换全部区块",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "2a",
+      "label": "新建纹样（含图片上传）成功",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "2b",
+      "label": "管理列表计数 +1",
+      "pass": true,
+      "detail": "45 → 46"
+    },
+    {
+      "id": "2c",
+      "label": "前台图库立即可见",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "2d",
+      "label": "首页统计条与后台同源（显示 46）",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "3a",
+      "label": "编辑纹样寓意成功",
+      "pass": true,
+      "detail": "已编辑的寓意文案·验收通过"
+    },
+    {
+      "id": "3b",
+      "label": "详情页同步显示新寓意",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "3c",
+      "label": "归档后管理列表标记「已归档」",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "3d",
+      "label": "归档后前台图库不再显示",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "4a",
+      "label": "普通用户访问 /admin 被重定向",
+      "pass": true,
+      "detail": "当前路径 /login"
+    },
+    {
+      "id": "4b",
+      "label": "mock 层写接口返回 403",
+      "pass": true,
+      "detail": "code=403"
+    },
+    {
+      "id": "5a",
+      "label": "看板六项指标齐备",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "5b",
+      "label": "看板纹样总数与实际一致",
+      "pass": true,
+      "detail": "显示 45 / 实际 45"
+    },
+    {
+      "id": "5c",
+      "label": "近7日趋势折线图已渲染",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "5d",
+      "label": "热门纹样 TOP5 区块存在",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "6a",
+      "label": "刷新后新建记录仍在",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "6b",
+      "label": "刷新后编辑内容与归档状态仍在",
+      "pass": true,
+      "detail": "status=archived"
+    },
+    {
+      "id": "6c",
+      "label": "刷新后埋点数据仍在",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "7",
+      "label": "控制台无异常报错",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "consoleErrors": []
+}

@@ -1,0 +1,95 @@
+{
+  "results": [
+    {
+      "id": "0",
+      "label": "全新浏览器初始为未登录",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "1a",
+      "label": "注册成功并自动登录（离开登录页）",
+      "pass": true,
+      "detail": "当前 /"
+    },
+    {
+      "id": "1b",
+      "label": "注册成功有明确提示",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "1c",
+      "label": "个人中心正常显示新账号",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "2",
+      "label": "刷新页面后仍保持登录",
+      "pass": true,
+      "detail": "当前 /profile"
+    },
+    {
+      "id": "3",
+      "label": "退出登录后回到登录页",
+      "pass": true,
+      "detail": "当前 /login"
+    },
+    {
+      "id": "4",
+      "label": "新注册账号退出后可重新登录",
+      "pass": true,
+      "detail": "当前 /profile"
+    },
+    {
+      "id": "5a",
+      "label": "密码错误时不静默失败（有 toast 提示）",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "5b",
+      "label": "改回正确密码后可登录",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "6",
+      "label": "重复用户名注册被拒且有提示",
+      "pass": true,
+      "detail": "当前 /login / 纹\n纹藏\n纹样图库\nAI纹样工坊\n守艺人展厅\n体验预约\n文创商城\n登录 / 注册\n纹\n纹藏\n\n注册账号，开启非遗探索之旅"
+    },
+    {
+      "id": "8a",
+      "label": "内置演示账号 demo 仍可登录",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "8b",
+      "label": "普通用户访问 /admin 被重定向",
+      "pass": true,
+      "detail": "当前 /login"
+    },
+    {
+      "id": "8c",
+      "label": "管理员 admin 可进运营后台",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "9",
+      "label": "刷新后管理员会话与权限保持",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "10",
+      "label": "控制台无异常报错",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "consoleErrors": []
+}

@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "JiangChengHei";
+  src: url("https://resource-static.bj.bcebos.com/fonts-skill/JiangChengHei_Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JiangChengHei";
+  src: url("https://resource-static.bj.bcebos.com/fonts-skill/JiangChengHei_Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SourceHanSerifCN";
+  src: url("https://resource-static.bj.bcebos.com/fonts-skill/SourceHanSerifCN-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    --popover: 0 0% 100%;
+    --popover-foreground: 218 45% 15%;
+    /* custom tokens | registered by miaoda-super-design */
+    --cinnabar: 8 72% 45%;
+    --ink: 218 45% 15%;
+    --background: 40 30% 96%;
+    --foreground: 218 45% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 218 45% 15%;
+    --primary: 218 51% 37%;
+    --primary-foreground: 40 30% 96%;
+    --secondary: 218 25% 90%;
+    --secondary-foreground: 218 51% 28%;
+    --muted: 40 18% 90%;
+    --muted-foreground: 218 15% 42%;
+    --accent: 8 72% 45%;
+    --accent-foreground: 40 30% 96%;
+    --destructive: 0 72% 48%;
+    --destructive-foreground: 40 30% 96%;
+    --border: 218 20% 84%;
+    --input: 218 20% 84%;
+    --ring: 218 51% 37%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "JiangChengHei", "HarmonyOS Sans", system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .font-serif-cn {
+    font-family: "SourceHanSerifCN", serif;
+  }
+  .num-label {
+    font-family: "JiangChengHei", sans-serif;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+  }
+  .hairline {
+    height: 1px;
+    background: hsl(var(--primary) / 0.25);
+    transform-origin: left;
+  }
+  .accent-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: hsl(var(--accent));
+  }
+  .duotone-img {
+    filter: grayscale(0.3) contrast(1.05);
+  }
+}
